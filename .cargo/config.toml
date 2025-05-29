@@ -1,25 +1,28 @@
 [package]
 exclude = [
-    "python/",
-    "chemfst-py/",
-    "*.fst",
-    "__pycache__/",
-    "*.pyc",
-    "*.pyo",
-    "*.so",
-    "examples.py",
-    "test_*.py",
-    "simple_test.py",
-    "pyproject.toml",
-    ".venv/",
-    ".ropeproject/",
+  "python/",
+  "chemfst-py/",
+  "*.fst",
+  "__pycache__/",
+  "*.pyc",
+  "*.pyo",
+  "*.so",
+  "examples.py",
+  "test_*.py",
+  "simple_test.py",
+  "pyproject.toml",
+  ".venv/",
+  ".ropeproject/",
 ]
 include = [
-    "src/**/*",
-    "tests/**/*",
-    "Cargo.toml",
-    "README.md",
-    "LICENSE",
-    "CHANGELOG.md",
-    "rustfmt.toml",
+  "src/**/*",
+  "tests/**/*",
+  "Cargo.toml",
+  "README.md",
+  "LICENSE",
+  "CHANGELOG.md",
+  "rustfmt.toml",
 ]
+[alias]
+lint = "clippy -- -D warnings"
+lint-fix = "clippy --fix --allow-dirty -- -D warnings"
