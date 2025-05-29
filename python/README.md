@@ -70,10 +70,10 @@ Initialize a chemical name search engine.
 
 #### Methods
 
-- **`prefix_search(prefix, max_results=100)`**:  
+- **`prefix_search(prefix, max_results=100)`**:
   Find chemical names starting with a specified prefix
-  
-- **`substring_search(substring, max_results=100)`**:  
+
+- **`substring_search(substring, max_results=100)`**:
   Find chemical names containing a specified substring
 
 ## Performance

@@ -115,10 +115,10 @@ impl ChemicalFST {
     fn __str__(&self) -> PyResult<String> {
         Ok("ChemicalFST - Chemical name search engine using Finite State Transducers".to_string())
     }
-    
+
     /// Forces the operating system to load all pages of the FST into memory.
     ///
-    /// This function traverses the entire FST, causing all pages to be loaded into 
+    /// This function traverses the entire FST, causing all pages to be loaded into
     /// the operating system's page cache. This improves the performance of subsequent
     /// searches by eliminating page faults.
     ///

@@ -25,7 +25,7 @@ def main():
             print(f"Error: Chemical names file not found at {input_path}")
             print("Please create a chemical_names.txt file with one chemical name per line")
             sys.exit(1)
-        
+
         build_fst(input_path, fst_path)
         print(f"FST index built and saved to {fst_path}")
 
@@ -42,10 +42,10 @@ def main():
         start = time.time()
         results = fst.prefix_search(prefix, max_results=5)
         search_time = time.time() - start
-        
+
         for chemical in results:
             print(f"  {chemical}")
-        
+
         print(f"Found {len(results)} results in {search_time:.6f} seconds")
 
     # Example: Substring search
@@ -55,10 +55,10 @@ def main():
         start = time.time()
         results = fst.substring_search(substring, max_results=5)
         search_time = time.time() - start
-        
+
         for chemical in results:
             print(f"  {chemical}")
-        
+
         print(f"Found {len(results)} results in {search_time:.6f} seconds")
 
     # Performance benchmark
@@ -66,13 +66,13 @@ def main():
     test_prefix = "a"
     iterations = 100
     start = time.time()
-    
+
     for _ in range(iterations):
         fst.prefix_search(test_prefix, max_results=10)
-    
+
     total_time = time.time() - start
     avg_time = total_time / iterations
-    
+
     print(f"Performed {iterations} prefix searches")
     print(f"Total time: {total_time:.3f} seconds")
     print(f"Average time per search: {avg_time:.6f} seconds")
