@@ -3,7 +3,6 @@
 /chemfst-py/target/
 **/*.rs.bk
 Cargo.lock
-lcov.info
 
 # Python ignores
 __pycache__/
