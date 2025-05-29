@@ -1,3 +1,44 @@
+//! # Fast Search
+//!
+//! Fast Search is a high-performance text search library using Finite State Transducers (FSTs)
+//! to provide efficient prefix and substring searches. It's particularly useful for autocomplete
+//! features and searching through large datasets of terms like chemical names, product catalogs,
+//! or dictionaries.
+//!
+//! ## Features
+//!
+//! - Memory-efficient indexing using Finite State Transducers
+//! - Extremely fast prefix-based searches (autocomplete)
+//! - Case-insensitive substring searches
+//! - Memory-mapped file access for optimal performance
+//!
+//! ## Example
+//!
+//! ```rust,no_run
+//! use fast_search::{build_fst_set, load_fst_set, prefix_search, substring_search};
+//! use std::error::Error;
+//!
+//! fn main() -> Result<(), Box<dyn Error>> {
+//!     // Build an FST index from a list of terms
+//!     let input_path = "terms.txt";
+//!     let fst_path = "terms.fst";
+//!     build_fst_set(input_path, fst_path)?;
+//!
+//!     // Load the index into memory efficiently
+//!     let set = load_fst_set(fst_path)?;
+//!
+//!     // Perform prefix search (autocomplete)
+//!     let prefix_results = prefix_search(&set, "acet", 10);
+//!     println!("Found {} terms starting with 'acet'", prefix_results.len());
+//!
+//!     // Perform substring search
+//!     let substring_results = substring_search(&set, "benz", 10)?;
+//!     println!("Found {} terms containing 'benz'", substring_results.len());
+//!
+//!     Ok(())
+//! }
+//! ```
+
 use fst::{IntoStreamer, Set, SetBuilder, Streamer};
 use memmap2::Mmap;
 
@@ -6,6 +47,29 @@ use std::fs::{File, OpenOptions};
 use std::io::{BufRead, BufReader};
 
 /// Creates an FST Set from a list of chemical names in a text file.
+///
+/// This function reads terms from a text file (one term per line), sorts them
+/// (as required by the FST data structure), and builds an FST set index. The
+/// index is saved to disk at the specified path.
+///
+/// # Arguments
+///
+/// * `input_path` - Path to a text file containing terms, one per line
+/// * `fst_path` - Path where the FST index file will be saved
+///
+/// # Returns
+///
+/// * `Ok(())` on success
+/// * `Err(Box<dyn Error>)` if an error occurs during file operations or index building
+///
+/// # Example
+///
+/// ```no_run
+/// use fast_search::build_fst_set;
+/// 
+/// let result = build_fst_set("chemical_names.txt", "chemical_names.fst");
+/// assert!(result.is_ok());
+/// ```
 pub fn build_fst_set(input_path: &str, fst_path: &str) -> Result<(), Box<dyn Error>> {
     let file = File::open(input_path)?;
     let reader = BufReader::new(file);
@@ -28,6 +92,35 @@ pub fn build_fst_set(input_path: &str, fst_path: &str) -> Result<(), Box<dyn Err
 }
 
 /// Memory maps an FST set from disk.
+///
+/// This function loads an FST set from disk using memory mapping, which provides
+/// efficient access to the index without loading the entire file into memory.
+///
+/// # Arguments
+///
+/// * `fst_path` - Path to the FST index file
+///
+/// # Returns
+///
+/// * `Ok(Set<Mmap>)` - The memory-mapped FST set
+/// * `Err(Box<dyn Error>)` if the file cannot be opened or mapped
+///
+/// # Safety
+///
+/// This function uses `unsafe` to create a memory map of the file. It's safe as long as
+/// the file is not modified while the memory map is active.
+///
+/// # Example
+///
+/// ```no_run
+/// use fast_search::{build_fst_set, load_fst_set};
+/// 
+/// // First build the index
+/// build_fst_set("terms.txt", "terms.fst").unwrap();
+/// 
+/// // Then load it
+/// let set = load_fst_set("terms.fst").unwrap();
+/// ```
 pub fn load_fst_set(fst_path: &str) -> Result<Set<Mmap>, Box<dyn Error>> {
     let file = OpenOptions::new().read(true).open(fst_path)?;
     let mmap = unsafe { Mmap::map(&file)? };
@@ -36,6 +129,31 @@ pub fn load_fst_set(fst_path: &str) -> Result<Set<Mmap>, Box<dyn Error>> {
 }
 
 /// Performs prefix-based autocomplete search.
+///
+/// This function efficiently finds all terms in the FST set that start with the given prefix,
+/// up to a specified maximum number of results.
+///
+/// # Arguments
+///
+/// * `set` - The FST Set to search in
+/// * `prefix` - The prefix to search for
+/// * `max_results` - Maximum number of results to return
+///
+/// # Returns
+///
+/// A vector of strings containing the matching terms
+///
+/// # Example
+///
+/// ```no_run
+/// use fast_search::{load_fst_set, prefix_search};
+/// 
+/// let set = load_fst_set("chemical_names.fst").unwrap();
+/// let results = prefix_search(&set, "acet", 10);
+/// for term in results {
+///     println!("Found: {}", term);
+/// }
+/// ```
 pub fn prefix_search(set: &Set<Mmap>, prefix: &str, max_results: usize) -> Vec<String> {
     let mut results = Vec::new();
     let mut stream = set
@@ -56,7 +174,33 @@ pub fn prefix_search(set: &Set<Mmap>, prefix: &str, max_results: usize) -> Vec<S
     results
 }
 
-/// Performs substring search using regex pattern matching on the FST set.
+/// Performs substring search using pattern matching on the FST set.
+///
+/// This function finds all terms in the FST set that contain the given substring,
+/// up to a specified maximum number of results. The search is case-insensitive.
+///
+/// # Arguments
+///
+/// * `set` - The FST Set to search in
+/// * `substring` - The substring to search for
+/// * `max_results` - Maximum number of results to return
+///
+/// # Returns
+///
+/// * `Ok(Vec<String>)` - A vector of strings containing the matching terms
+/// * `Err(Box<dyn Error>)` if an error occurs during search
+///
+/// # Example
+///
+/// ```no_run
+/// use fast_search::{load_fst_set, substring_search};
+/// 
+/// let set = load_fst_set("chemical_names.fst").unwrap();
+/// let results = substring_search(&set, "benz", 10).unwrap();
+/// for term in results {
+///     println!("Found: {}", term);
+/// }
+/// ```
 pub fn substring_search(
     set: &Set<Mmap>,
     substring: &str,
