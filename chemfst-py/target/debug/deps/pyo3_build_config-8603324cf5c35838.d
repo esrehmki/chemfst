@@ -1,0 +1,13 @@
+/Users/eehmki/Code/ChemFST/chemfst-py/target/debug/deps/libpyo3_build_config-8603324cf5c35838.rmeta: /Users/eehmki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.19.2/src/lib.rs /Users/eehmki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.19.2/src/errors.rs /Users/eehmki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.19.2/src/impl_.rs /Users/eehmki/Code/ChemFST/chemfst-py/target/debug/build/pyo3-build-config-b2efb2681e6d87b0/out/pyo3-build-config-file.txt /Users/eehmki/Code/ChemFST/chemfst-py/target/debug/build/pyo3-build-config-b2efb2681e6d87b0/out/pyo3-build-config.txt
+
+/Users/eehmki/Code/ChemFST/chemfst-py/target/debug/deps/libpyo3_build_config-8603324cf5c35838.rlib: /Users/eehmki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.19.2/src/lib.rs /Users/eehmki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.19.2/src/errors.rs /Users/eehmki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.19.2/src/impl_.rs /Users/eehmki/Code/ChemFST/chemfst-py/target/debug/build/pyo3-build-config-b2efb2681e6d87b0/out/pyo3-build-config-file.txt /Users/eehmki/Code/ChemFST/chemfst-py/target/debug/build/pyo3-build-config-b2efb2681e6d87b0/out/pyo3-build-config.txt
+
+/Users/eehmki/Code/ChemFST/chemfst-py/target/debug/deps/pyo3_build_config-8603324cf5c35838.d: /Users/eehmki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.19.2/src/lib.rs /Users/eehmki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.19.2/src/errors.rs /Users/eehmki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.19.2/src/impl_.rs /Users/eehmki/Code/ChemFST/chemfst-py/target/debug/build/pyo3-build-config-b2efb2681e6d87b0/out/pyo3-build-config-file.txt /Users/eehmki/Code/ChemFST/chemfst-py/target/debug/build/pyo3-build-config-b2efb2681e6d87b0/out/pyo3-build-config.txt
+
+/Users/eehmki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.19.2/src/lib.rs:
+/Users/eehmki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.19.2/src/errors.rs:
+/Users/eehmki/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/pyo3-build-config-0.19.2/src/impl_.rs:
+/Users/eehmki/Code/ChemFST/chemfst-py/target/debug/build/pyo3-build-config-b2efb2681e6d87b0/out/pyo3-build-config-file.txt:
+/Users/eehmki/Code/ChemFST/chemfst-py/target/debug/build/pyo3-build-config-b2efb2681e6d87b0/out/pyo3-build-config.txt:
+
+# env-dep:OUT_DIR=/Users/eehmki/Code/ChemFST/chemfst-py/target/debug/build/pyo3-build-config-b2efb2681e6d87b0/out

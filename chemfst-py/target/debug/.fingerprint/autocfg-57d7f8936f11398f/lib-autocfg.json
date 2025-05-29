@@ -1,0 +1,1 @@
+{"rustc":15497389221046826682,"features":"[]","declared_features":"[]","target":6962977057026645649,"profile":3033921117576893,"path":2057039876972099527,"deps":[],"local":[{"CheckDepInfo":{"dep_info":"debug/.fingerprint/autocfg-57d7f8936f11398f/dep-lib-autocfg","checksum":false}}],"rustflags":["-C","target-cpu=native"],"config":2069994364910194474,"compile_kind":0}

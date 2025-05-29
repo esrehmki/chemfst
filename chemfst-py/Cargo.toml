@@ -1,0 +1,14 @@
+[package]
+name = "chemfst-py"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "chemfst"
+crate-type = ["cdylib"]
+
+[dependencies]
+chemfst = { path = ".." }
+pyo3 = { version = "0.19", features = ["extension-module", "abi3-py311"] }
+memmap2 = "0.9"
+fst = "0.4"

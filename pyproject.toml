@@ -1,0 +1,39 @@
+[build-system]
+requires = ["maturin>=1.0,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "chemfst"
+version = "0.1.0"
+description = "Python bindings for ChemFST - a high-performance chemical name search library"
+authors = [
+    {name = "ChemFST Team"}
+]
+readme = "README.md"
+requires-python = ">=3.11"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Rust",
+    "Topic :: Scientific/Engineering :: Chemistry",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Text Processing :: Indexing",
+]
+
+[project.urls]
+Homepage = "https://github.com/username/ChemFST"
+Documentation = "https://github.com/username/ChemFST"
+Repository = "https://github.com/username/ChemFST"
+
+[tool.maturin]
+module-name = "chemfst"
+binding = "pyo3"
+manifest-path = "chemfst-py/Cargo.toml"
+
+[tool.isort]
+profile = "black"
+
+[tool.black]
+line-length = 88
+target-version = ["py311"]
