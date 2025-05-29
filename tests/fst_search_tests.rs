@@ -1,4 +1,4 @@
-use fast_search::{build_fst_set, load_fst_set, prefix_search, substring_search};
+use chemfst::{build_fst_set, load_fst_set, prefix_search, substring_search};
 use std::io::Write;
 use std::path::PathBuf;
 use tempfile::NamedTempFile;
@@ -76,7 +76,7 @@ fn test_substring_search() {
     let set = load_fst_set(fst_path.to_str().unwrap()).unwrap();
 
     // Test substring search
-    let results = substring_search(&set, "enz", 10).unwrap();
+    let results = substring_search(&set, "benz", 10).unwrap();
     assert_eq!(results.len(), 2);
     assert!(results.contains(&"benzene".to_string()));
     assert!(results.contains(&"benzaldehyde".to_string()));

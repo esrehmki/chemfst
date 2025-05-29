@@ -1,6 +1,6 @@
-# Fast Search
+# ChemFST
 
-Fast Search is a high-performance text search library using Finite State Transducers (FSTs) to provide efficient prefix and substring searches. It's particularly useful for autocomplete features and searching through large datasets of terms like chemical names, product catalogs, or dictionaries.
+ChemFST is a high-performance chemical name search library using Finite State Transducers (FSTs) to provide efficient searches of systematic and trivial names of chemical compounds in milliseconds. It's particularly useful for autocomplete features and searching through large chemical compound databases.
 
 ## Features
 
@@ -23,14 +23,14 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-fast_search = { path = "path/to/fast_search" }
+chemfst = { path = "path/to/chemfst" }
 ```
 
 For a real-world application, you would publish the crate to [crates.io](https://crates.io/) and then specify:
 
 ```toml
 [dependencies]
-fast_search = "0.1.0"
+chemfst = "0.1.0"
 ```
 
 ## Using the Library
@@ -38,13 +38,13 @@ fast_search = "0.1.0"
 ### Basic Usage
 
 ```rust
-use fast_search::{build_fst_set, load_fst_set, prefix_search, substring_search};
+use chemfst::{build_fst_set, load_fst_set, prefix_search, substring_search};
 use std::error::Error;
 
 fn main() -> Result<(), Box<dyn Error>> {
-    // Step 1: Create an index from a list of terms (one term per line)
-    let input_path = "terms.txt";
-    let fst_path = "terms.fst";
+    // Step 1: Create an index from a list of chemical names (one term per line)
+    let input_path = "chemical_names.txt";
+    let fst_path = "chemical_names.fst";
     build_fst_set(input_path, fst_path)?;
     
     // Step 2: Load the index into memory
@@ -66,9 +66,9 @@ fn main() -> Result<(), Box<dyn Error>> {
 
 #### `build_fst_set(input_path: &str, fst_path: &str) -> Result<(), Box<dyn Error>>`
 
-Creates an FST set from a list of terms in a text file.
+Creates an FST set from a list of chemical names in a text file.
 
-- `input_path`: Path to a text file with one term per line
+- `input_path`: Path to a text file with one chemical name per line
 - `fst_path`: Path where the FST index will be saved
 
 #### `load_fst_set(fst_path: &str) -> Result<Set<Mmap>, Box<dyn Error>>`
@@ -85,7 +85,7 @@ Performs a prefix-based search (autocomplete).
 - `set`: The FST Set to search through
 - `prefix`: The prefix to search for
 - `max_results`: Maximum number of results to return
-- Returns: A vector of matching terms
+- Returns: A vector of matching chemical names
 
 #### `substring_search(set: &Set<Mmap>, substring: &str, max_results: usize) -> Result<Vec<String>, Box<dyn Error>>`
 
@@ -94,7 +94,7 @@ Performs a case-insensitive substring search.
 - `set`: The FST Set to search through
 - `substring`: The substring to search for
 - `max_results`: Maximum number of results to return
-- Returns: A vector of matching terms
+- Returns: A vector of matching chemical names
 
 ## Development
 
@@ -109,7 +109,7 @@ Performs a case-insensitive substring search.
 1. Clone the repository:
    ```bash
    git clone <repository_url>
-   cd fast_search
+   cd chemfst
    ```
 
 2. Build the project:
@@ -147,8 +147,8 @@ Contributions are welcome! Here's how you can contribute:
 
 ## Performance Considerations
 
-- FST sets are immutable. If your data changes, you'll need to rebuild the index.
-- For large datasets, consider building the index as an offline process.
+- FST sets are immutable. If your chemical database changes, you'll need to rebuild the index.
+- For large chemical databases, consider building the index as an offline process.
 - Memory-mapped files provide excellent performance but require care when the underlying file changes.
 
 ## License

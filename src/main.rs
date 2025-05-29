@@ -1,4 +1,4 @@
-use fast_search::{build_fst_set, load_fst_set, prefix_search, substring_search};
+use chemfst::{build_fst_set, load_fst_set, prefix_search, substring_search};
 use std::error::Error;
 
 fn main() -> Result<(), Box<dyn Error>> {

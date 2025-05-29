@@ -1,5 +1,5 @@
 # Changelog
-All notable changes to the Fast Search project will be documented in this file.
+All notable changes to the ChemFST project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -8,9 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Initial project structure with lib.rs and main.rs
-- Core FST (Finite State Transducer) functionality
-- Prefix search implementation for autocomplete
-- Substring search implementation
-- Memory-mapped file support for efficient loading
+- Core FST (Finite State Transducer) functionality for chemical compound search
+- Prefix search implementation for chemical name autocomplete
+- Substring search implementation for chemical name lookup
+- Memory-mapped file support for efficient loading of large chemical databases
 - Integration tests
 - Basic documentation

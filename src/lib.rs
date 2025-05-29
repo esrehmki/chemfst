@@ -1,9 +1,8 @@
-//! # Fast Search
+//! # ChemFST
 //!
-//! Fast Search is a high-performance text search library using Finite State Transducers (FSTs)
-//! to provide efficient prefix and substring searches. It's particularly useful for autocomplete
-//! features and searching through large datasets of terms like chemical names, product catalogs,
-//! or dictionaries.
+//! ChemFST is a high-performance chemical name search library using Finite State Transducers (FSTs)
+//! to provide efficient searches of systematic and trivial names of chemical compounds in milliseconds.
+//! It's particularly useful for autocomplete features and searching through large chemical databases.
 //!
 //! ## Features
 //!
@@ -15,13 +14,13 @@
 //! ## Example
 //!
 //! ```rust,no_run
-//! use fast_search::{build_fst_set, load_fst_set, prefix_search, substring_search};
+//! use chemfst::{build_fst_set, load_fst_set, prefix_search, substring_search};
 //! use std::error::Error;
 //!
 //! fn main() -> Result<(), Box<dyn Error>> {
-//!     // Build an FST index from a list of terms
-//!     let input_path = "terms.txt";
-//!     let fst_path = "terms.fst";
+//!     // Build an FST index from a list of chemical names
+//!     let input_path = "chemical_names.txt";
+//!     let fst_path = "chemical_names.fst";
 //!     build_fst_set(input_path, fst_path)?;
 //!
 //!     // Load the index into memory efficiently
@@ -29,11 +28,11 @@
 //!
 //!     // Perform prefix search (autocomplete)
 //!     let prefix_results = prefix_search(&set, "acet", 10);
-//!     println!("Found {} terms starting with 'acet'", prefix_results.len());
+//!     println!("Found {} chemicals starting with 'acet'", prefix_results.len());
 //!
 //!     // Perform substring search
 //!     let substring_results = substring_search(&set, "benz", 10)?;
-//!     println!("Found {} terms containing 'benz'", substring_results.len());
+//!     println!("Found {} chemicals containing 'benz'", substring_results.len());
 //!
 //!     Ok(())
 //! }
@@ -48,13 +47,13 @@ use std::io::{BufRead, BufReader};
 
 /// Creates an FST Set from a list of chemical names in a text file.
 ///
-/// This function reads terms from a text file (one term per line), sorts them
+/// This function reads chemical names from a text file (one name per line), sorts them
 /// (as required by the FST data structure), and builds an FST set index. The
 /// index is saved to disk at the specified path.
 ///
 /// # Arguments
 ///
-/// * `input_path` - Path to a text file containing terms, one per line
+/// * `input_path` - Path to a text file containing chemical names, one per line
 /// * `fst_path` - Path where the FST index file will be saved
 ///
 /// # Returns
@@ -65,7 +64,7 @@ use std::io::{BufRead, BufReader};
 /// # Example
 ///
 /// ```no_run
-/// use fast_search::build_fst_set;
+/// use chemfst::build_fst_set;
 /// 
 /// let result = build_fst_set("chemical_names.txt", "chemical_names.fst");
 /// assert!(result.is_ok());
@@ -113,13 +112,13 @@ pub fn build_fst_set(input_path: &str, fst_path: &str) -> Result<(), Box<dyn Err
 /// # Example
 ///
 /// ```no_run
-/// use fast_search::{build_fst_set, load_fst_set};
+/// use chemfst::{build_fst_set, load_fst_set};
 /// 
 /// // First build the index
-/// build_fst_set("terms.txt", "terms.fst").unwrap();
+/// build_fst_set("chemical_names.txt", "chemical_names.fst").unwrap();
 /// 
 /// // Then load it
-/// let set = load_fst_set("terms.fst").unwrap();
+/// let set = load_fst_set("chemical_names.fst").unwrap();
 /// ```
 pub fn load_fst_set(fst_path: &str) -> Result<Set<Mmap>, Box<dyn Error>> {
     let file = OpenOptions::new().read(true).open(fst_path)?;
@@ -130,7 +129,7 @@ pub fn load_fst_set(fst_path: &str) -> Result<Set<Mmap>, Box<dyn Error>> {
 
 /// Performs prefix-based autocomplete search.
 ///
-/// This function efficiently finds all terms in the FST set that start with the given prefix,
+/// This function efficiently finds all chemical names in the FST set that start with the given prefix,
 /// up to a specified maximum number of results.
 ///
 /// # Arguments
@@ -141,17 +140,17 @@ pub fn load_fst_set(fst_path: &str) -> Result<Set<Mmap>, Box<dyn Error>> {
 ///
 /// # Returns
 ///
-/// A vector of strings containing the matching terms
+/// A vector of strings containing the matching chemical names
 ///
 /// # Example
 ///
 /// ```no_run
-/// use fast_search::{load_fst_set, prefix_search};
+/// use chemfst::{load_fst_set, prefix_search};
 /// 
 /// let set = load_fst_set("chemical_names.fst").unwrap();
 /// let results = prefix_search(&set, "acet", 10);
-/// for term in results {
-///     println!("Found: {}", term);
+/// for chemical in results {
+///     println!("Found: {}", chemical);
 /// }
 /// ```
 pub fn prefix_search(set: &Set<Mmap>, prefix: &str, max_results: usize) -> Vec<String> {
@@ -176,7 +175,7 @@ pub fn prefix_search(set: &Set<Mmap>, prefix: &str, max_results: usize) -> Vec<S
 
 /// Performs substring search using pattern matching on the FST set.
 ///
-/// This function finds all terms in the FST set that contain the given substring,
+/// This function finds all chemical names in the FST set that contain the given substring,
 /// up to a specified maximum number of results. The search is case-insensitive.
 ///
 /// # Arguments
@@ -187,18 +186,18 @@ pub fn prefix_search(set: &Set<Mmap>, prefix: &str, max_results: usize) -> Vec<S
 ///
 /// # Returns
 ///
-/// * `Ok(Vec<String>)` - A vector of strings containing the matching terms
+/// * `Ok(Vec<String>)` - A vector of strings containing the matching chemical names
 /// * `Err(Box<dyn Error>)` if an error occurs during search
 ///
 /// # Example
 ///
 /// ```no_run
-/// use fast_search::{load_fst_set, substring_search};
+/// use chemfst::{load_fst_set, substring_search};
 /// 
 /// let set = load_fst_set("chemical_names.fst").unwrap();
 /// let results = substring_search(&set, "benz", 10).unwrap();
-/// for term in results {
-///     println!("Found: {}", term);
+/// for chemical in results {
+///     println!("Found: {}", chemical);
 /// }
 /// ```
 pub fn substring_search(

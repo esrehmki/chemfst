@@ -1,6 +1,6 @@
-# Contributing to Fast Search
+# Contributing to ChemFST
 
-Thank you for considering contributing to Fast Search! This document provides guidelines and instructions to help you get started.
+Thank you for considering contributing to ChemFST! This document provides guidelines and instructions to help you get started.
 
 ## Code of Conduct
 
@@ -80,4 +80,4 @@ If you need help with contributing, feel free to:
 - Open an issue with questions.
 - Reach out to maintainers directly.
 
-Thank you for contributing to Fast Search!
+Thank you for contributing to ChemFST!
