@@ -1,26 +1,25 @@
-[build]
-# Enable incremental compilation
-incremental = true
-
-# Default release profile to build with optimizations
-# You can also use -C target-cpu=native if you only target the CPU running the compiler.
-rustflags = ["-C", "target-cpu=native"]
-
-[test]
-# Show output of tests as they run
-nocapture = true
-
-[profile.dev]
-# Optimize dependencies even in debug builds
-opt-level = 1
-debug = true
-
-[profile.release]
-debug = false
-opt-level = 3
-lto = "thin"
-codegen-units = 1
-
-[doc]
-# Enable warnings for missing docs
-rustdoc-args = ["--warn", "missing_docs"]
+[package]
+exclude = [
+    "python/",
+    "chemfst-py/",
+    "*.fst",
+    "__pycache__/",
+    "*.pyc",
+    "*.pyo",
+    "*.so",
+    "examples.py",
+    "test_*.py",
+    "simple_test.py",
+    "pyproject.toml",
+    ".venv/",
+    ".ropeproject/",
+]
+include = [
+    "src/**/*",
+    "tests/**/*",
+    "Cargo.toml",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "rustfmt.toml",
+]
