@@ -2,11 +2,42 @@
 # See https://pre-commit.com for more information
 
 repos:
--   repo: https://github.com/pre-commit/pre-commit-hooks
+  # Standard pre-commit hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.5.0
     hooks:
-    -   id: trailing-whitespace
-    -   id: end-of-file-fixer
-    -   id: check-yaml
-    -   id: check-added-large-files
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+      - id: check-added-large-files
         args: ['--maxkb=500']
+      - id: check-merge-conflict
+
+  # Run cargo fmt for Rust formatting
+  - repo: local
+    hooks:
+      - id: cargo-fmt
+        name: Rust formatting
+        description: Run cargo fmt on Rust files
+        entry: cargo fmt --
+        language: system
+        types: [rust]
+        pass_filenames: false
+
+      - id: cargo-clippy
+        name: Rust linting
+        description: Run cargo clippy on Rust files
+        entry: cargo clippy -- -D warnings
+        language: system
+        types: [rust]
+        pass_filenames: false
+
+      - id: cargo-test
+        name: Rust tests
+        description: Run cargo test to verify functionality
+        entry: cargo test
+        language: system
+        types: [rust]
+        pass_filenames: false
+        stages: [push]
