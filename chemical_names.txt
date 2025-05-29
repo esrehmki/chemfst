@@ -1,0 +1,32 @@
+acetaminophen
+acetylsalicylic acid
+acetic acid
+acetone
+acetonitrile
+benzene
+benzoic acid
+benzophenone
+benzaldehyde
+caffeine
+chloroform
+cyclohexane
+dichloromethane
+diethyl ether
+dimethyl sulfoxide
+ethanol
+ethyl acetate
+formaldehyde
+glycerol
+hydrogen peroxide
+isopropyl alcohol
+methane
+methanol
+nitric acid
+phenol
+propanol
+sodium chloride
+sodium hydroxide
+sulfuric acid
+toluene
+water
+xylene
