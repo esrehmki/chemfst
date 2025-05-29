@@ -46,18 +46,18 @@ fn main() -> Result<(), Box<dyn Error>> {
     let input_path = "chemical_names.txt";
     let fst_path = "chemical_names.fst";
     build_fst_set(input_path, fst_path)?;
-    
+
     // Step 2: Load the index into memory
     let set = load_fst_set(fst_path)?;
-    
+
     // Step 3: Perform searches
-    
+
     // Prefix search (autocomplete)
     let prefix_results = prefix_search(&set, "acet", 10); // Find up to 10 terms starting with "acet"
-    
+
     // Substring search
-    let substring_results = substring_search(&set, "benz", 10)?; // Find up to 10 terms containing "benz"
-    
+    let substring_results = substring_search(&set, "enz", 10)?; // Find up to 10 terms containing "enz"
+
     Ok(())
 }
 ```

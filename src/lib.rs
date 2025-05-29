@@ -31,8 +31,8 @@
 //!     println!("Found {} chemicals starting with 'acet'", prefix_results.len());
 //!
 //!     // Perform substring search
-//!     let substring_results = substring_search(&set, "benz", 10)?;
-//!     println!("Found {} chemicals containing 'benz'", substring_results.len());
+//!     let substring_results = substring_search(&set, "enz", 10)?;
+//!     println!("Found {} chemicals containing 'enz'", substring_results.len());
 //!
 //!     Ok(())
 //! }
@@ -65,7 +65,7 @@ use std::io::{BufRead, BufReader};
 ///
 /// ```no_run
 /// use chemfst::build_fst_set;
-/// 
+///
 /// let result = build_fst_set("chemical_names.txt", "chemical_names.fst");
 /// assert!(result.is_ok());
 /// ```
@@ -113,10 +113,10 @@ pub fn build_fst_set(input_path: &str, fst_path: &str) -> Result<(), Box<dyn Err
 ///
 /// ```no_run
 /// use chemfst::{build_fst_set, load_fst_set};
-/// 
+///
 /// // First build the index
 /// build_fst_set("chemical_names.txt", "chemical_names.fst").unwrap();
-/// 
+///
 /// // Then load it
 /// let set = load_fst_set("chemical_names.fst").unwrap();
 /// ```
@@ -146,7 +146,7 @@ pub fn load_fst_set(fst_path: &str) -> Result<Set<Mmap>, Box<dyn Error>> {
 ///
 /// ```no_run
 /// use chemfst::{load_fst_set, prefix_search};
-/// 
+///
 /// let set = load_fst_set("chemical_names.fst").unwrap();
 /// let results = prefix_search(&set, "acet", 10);
 /// for chemical in results {
@@ -160,7 +160,7 @@ pub fn prefix_search(set: &Set<Mmap>, prefix: &str, max_results: usize) -> Vec<S
         .ge(prefix)
         .lt(format!("{}{}", prefix, char::MAX))
         .into_stream();
-    
+
     while let Some(key) = stream.next() {
         if results.len() >= max_results {
             break;
@@ -169,7 +169,7 @@ pub fn prefix_search(set: &Set<Mmap>, prefix: &str, max_results: usize) -> Vec<S
             results.push(s);
         }
     }
-    
+
     results
 }
 
@@ -193,7 +193,7 @@ pub fn prefix_search(set: &Set<Mmap>, prefix: &str, max_results: usize) -> Vec<S
 ///
 /// ```no_run
 /// use chemfst::{load_fst_set, substring_search};
-/// 
+///
 /// let set = load_fst_set("chemical_names.fst").unwrap();
 /// let results = substring_search(&set, "benz", 10).unwrap();
 /// for chemical in results {
@@ -207,15 +207,15 @@ pub fn substring_search(
 ) -> Result<Vec<String>, Box<dyn Error>> {
     // We'll do this manually instead of using fst-regex
     // No need for regex pattern as we're doing direct substring matching
-    
+
     let mut results = Vec::new();
     let mut stream = set.stream().into_stream();
-    
+
     while let Some(key) = stream.next() {
         if results.len() >= max_results {
             break;
         }
-        
+
         if let Ok(s) = String::from_utf8(key.to_vec()) {
             // Manually check if the string contains our substring
             if s.to_lowercase().contains(&substring.to_lowercase()) {
@@ -223,6 +223,6 @@ pub fn substring_search(
             }
         }
     }
-    
+
     Ok(results)
 }

@@ -76,7 +76,7 @@ fn test_substring_search() {
     let set = load_fst_set(fst_path.to_str().unwrap()).unwrap();
 
     // Test substring search
-    let results = substring_search(&set, "benz", 10).unwrap();
+    let results = substring_search(&set, "enz", 10).unwrap();
     assert_eq!(results.len(), 2);
     assert!(results.contains(&"benzene".to_string()));
     assert!(results.contains(&"benzaldehyde".to_string()));
@@ -86,8 +86,12 @@ fn test_substring_search() {
     assert_eq!(empty_results.len(), 0);
 
     // Test case insensitivity
-    let case_results = substring_search(&set, "BENZ", 10).unwrap();
+    let case_results = substring_search(&set, "ENZ", 10).unwrap();
     assert_eq!(case_results.len(), 2);
+
+    // Test one letter
+    let limited_results = substring_search(&set, "e", 10).unwrap();
+    assert_eq!(limited_results.len(), 5);
 
     // Test limit
     let limited_results = substring_search(&set, "e", 2).unwrap();
