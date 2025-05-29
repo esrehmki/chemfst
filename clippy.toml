@@ -1,21 +1,12 @@
-# List of lints that should be denied or allowed
+# Clippy configuration
 # See: https://rust-lang.github.io/rust-clippy/master/
 
-# Deny all Clippy warnings by default
-deny = ["clippy::all", "clippy::pedantic"]
-
-# These are too restrictive for our codebase
-allow = [
-    # Allow doc comments without code examples
-    "clippy::missing_errors_doc",
-    "clippy::missing_panics_doc",
-    
-    # Allow using unwrap() in tests
-    "clippy::unwrap_used",
-    
-    # Less restrictive naming conventions
-    "clippy::module_name_repetitions",
-]
-
-# Configure specific lints
+# Lint configuration
 too-many-arguments-threshold = 10
+
+# Enable specific lints
+msrv = "1.51.0"
+cognitive-complexity-threshold = 25
+type-complexity-threshold = 500
+enum-variant-size-threshold = 200
+excessive-nesting-threshold = 6
