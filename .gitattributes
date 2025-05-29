@@ -1,0 +1,47 @@
+# Set default behavior to automatically normalize line endings
+* text=auto
+
+# Explicitly declare text files that should always be normalized
+*.rs text
+*.toml text
+*.md text
+*.py text
+*.yaml text
+*.yml text
+*.json text
+*.sh text
+*.txt text
+*.html text
+*.css text
+*.js text
+
+# Explicitly declare files that should have specific line endings
+# (even after git clone or git pull)
+*.rs text eol=lf
+*.toml text eol=lf
+Cargo.lock text eol=lf
+
+# Declare binary files that should not be modified
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.fst binary
+*.whl binary
+*.so binary
+*.dll binary
+
+# Specific handling for Windows scripts
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Prevent Git from trying to merge these files
+*.fst -merge
+*.min.js -merge
+*.min.css -merge
+
+# Handle GitHub Linguist overrides
+*.py linguist-language=Python
+*.rs linguist-language=Rust
