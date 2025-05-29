@@ -226,3 +226,40 @@ pub fn substring_search(
 
     Ok(results)
 }
+
+/// Forces the operating system to load all pages of the FST into memory.
+///
+/// This function traverses the entire FST, causing all pages of the memory-mapped file
+/// to be loaded into the operating system's page cache. This can significantly improve
+/// the performance of subsequent searches by eliminating page faults.
+///
+/// # Arguments
+///
+/// * `set` - The FST Set to preload
+///
+/// # Returns
+///
+/// * `Ok(usize)` - The number of keys preloaded from the FST
+/// * `Err(Box<dyn Error>)` if an error occurs during preloading
+///
+/// # Example
+///
+/// ```no_run
+/// use chemfst::{load_fst_set, preload_fst_set};
+///
+/// let set = load_fst_set("chemical_names.fst").unwrap();
+/// let count = preload_fst_set(&set).unwrap();
+/// println!("Preloaded {} chemical names into memory", count);
+/// ```
+pub fn preload_fst_set(set: &Set<Mmap>) -> Result<usize, Box<dyn Error>> {
+    // Force the OS to load parts of the FST into memory by performing a traversal
+    let mut stream = set.stream().into_stream();
+    let mut count = 0;
+    
+    // Just iterate through the set to touch all pages
+    while let Some(_) = stream.next() {
+        count += 1;
+    }
+    
+    Ok(count)
+}

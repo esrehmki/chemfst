@@ -1,5 +1,6 @@
 # Rust ignores
 /target/
+/chemfst-py/target/
 **/*.rs.bk
 Cargo.lock
 

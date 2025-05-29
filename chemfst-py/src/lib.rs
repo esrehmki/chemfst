@@ -115,4 +115,23 @@ impl ChemicalFST {
     fn __str__(&self) -> PyResult<String> {
         Ok("ChemicalFST - Chemical name search engine using Finite State Transducers".to_string())
     }
+    
+    /// Forces the operating system to load all pages of the FST into memory.
+    ///
+    /// This function traverses the entire FST, causing all pages to be loaded into 
+    /// the operating system's page cache. This improves the performance of subsequent
+    /// searches by eliminating page faults.
+    ///
+    /// Args:
+    ///     None
+    ///
+    /// Returns:
+    ///     int: The number of keys preloaded from the FST
+    ///
+    /// Raises:
+    ///     RuntimeError: If there's an error during preloading
+    fn preload(&self) -> PyResult<usize> {
+        ::chemfst::preload_fst_set(&self.set)
+            .map_err(|e| PyRuntimeError::new_err(format!("Preload error: {}", e)))
+    }
 }

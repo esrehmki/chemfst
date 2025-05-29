@@ -54,9 +54,18 @@ def main():
     fst = chemfst.ChemicalFST(str(fst_path))
     load_time = time.time() - start
     print(f"✅ Loaded FST index in {load_time:.3f} seconds")
+    
+    # Example 3: Preloading the FST for better performance
+    print("\n3. Preloading FST into memory")
+    print("----------------------------")
+    print("Preloading forces all pages of the FST into memory, improving search performance.")
+    start = time.time()
+    count = fst.preload()
+    preload_time = time.time() - start
+    print(f"✅ Preloaded {count} keys in {preload_time:.6f} seconds")
 
-    # Example 3: Prefix Search (Autocomplete)
-    print("\n3. Prefix search (autocomplete)")
+    # Example 4: Prefix Search (Autocomplete)
+    print("\n4. Prefix search (autocomplete)")
     print("------------------------------")
     prefixes = ["eth", "meth", "prop", "benz", "chlor", "a"]
     
@@ -74,8 +83,8 @@ def main():
         else:
             print("  No matching chemicals found")
 
-    # Example 4: Substring Search
-    print("\n4. Substring search")
+    # Example 5: Substring Search
+    print("\n5. Substring search")
     print("-----------------")
     substrings = ["acid", "ol", "ene", "hydr", "carb"]
     
@@ -93,8 +102,8 @@ def main():
         else:
             print("  No matching chemicals found")
 
-    # Example 5: Performance Testing
-    print("\n5. Performance Testing")
+    # Example 6: Performance Testing
+    print("\n6. Performance Testing")
     print("--------------------")
     iterations = 100
     test_prefix = "a"
@@ -115,7 +124,58 @@ def main():
     print("\nPerformance results:")
     print(f"  Prefix search:    {prefix_time:.3f}s total, {prefix_time/iterations*1000:.3f}ms per operation")
     print(f"  Substring search: {substring_time:.3f}s total, {substring_time/iterations*1000:.3f}ms per operation")
-
+    
+    # Example 7: Compare Performance With and Without Preloading
+    print("\n7. Effect of Preloading on Search Latency")
+    print("----------------------------------------")
+    print("To demonstrate the effect of preloading, we'll measure the first search")
+    print("time for each letter of the alphabet. This simulates a 'cold start'")
+    print("scenario where different parts of the FST need to be loaded from disk.")
+    print("\nNote: In a real application, this effect would be more noticeable with a much larger FST.")
+    
+    # Create a new FST instance without preloading
+    fresh_fst = chemfst.ChemicalFST(str(fst_path))
+    
+    # Test first search time for each letter
+    first_search_times = []
+    letters = list("abcdefghijklmnopqrstuvwxyz")
+    
+    print("\nTesting first-time searches for each letter without preloading:")
+    for letter in letters:
+        start = time.time()
+        results = fresh_fst.prefix_search(letter, 10)
+        search_time = time.time() - start
+        first_search_times.append(search_time)
+        print(f"  Letter '{letter}': {search_time*1000:.3f}ms ({len(results)} results)")
+    
+    avg_without_preload = sum(first_search_times) / len(first_search_times) * 1000
+    max_without_preload = max(first_search_times) * 1000
+    
+    # Now preload and test again
+    print("\nPreloading FST...")
+    count = fresh_fst.preload()
+    print(f"Preloaded {count} keys")
+    
+    preloaded_search_times = []
+    print("\nTesting searches for each letter after preloading:")
+    for letter in letters:
+        start = time.time()
+        results = fresh_fst.prefix_search(letter, 10)
+        search_time = time.time() - start
+        preloaded_search_times.append(search_time)
+        print(f"  Letter '{letter}': {search_time*1000:.3f}ms ({len(results)} results)")
+    
+    avg_with_preload = sum(preloaded_search_times) / len(preloaded_search_times) * 1000
+    max_with_preload = max(preloaded_search_times) * 1000
+    
+    improvement = (avg_without_preload - avg_with_preload) / avg_without_preload * 100
+    max_improvement = (max_without_preload - max_with_preload) / max_without_preload * 100
+    
+    print("\nPreloading Performance Impact:")
+    print(f"  Without preloading: avg={avg_without_preload:.3f}ms, max={max_without_preload:.3f}ms")
+    print(f"  With preloading:    avg={avg_with_preload:.3f}ms, max={max_with_preload:.3f}ms")
+    print(f"  Improvement:        {improvement:.1f}% faster on average, {max_improvement:.1f}% faster for worst case")
+    
     print("\n✅ ChemFST demonstration completed successfully!")
 
 
