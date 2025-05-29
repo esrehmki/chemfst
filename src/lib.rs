@@ -1,6 +1,6 @@
-//! # ChemFST
+//! # `ChemFST`
 //!
-//! ChemFST is a high-performance chemical name search library using Finite State Transducers (FSTs)
+//! `ChemFST` is a high-performance chemical name search library using Finite State Transducers (FSTs)
 //! to provide efficient searches of systematic and trivial names of chemical compounds in milliseconds.
 //! It's particularly useful for autocomplete features and searching through large chemical databases.
 //!
@@ -61,6 +61,13 @@ use std::io::{BufRead, BufReader};
 /// * `Ok(())` on success
 /// * `Err(Box<dyn Error>)` if an error occurs during file operations or index building
 ///
+/// # Errors
+///
+/// This function will return an error if:
+/// * The input file cannot be found or read
+/// * The output file cannot be created or written to
+/// * There is an issue building the FST index
+///
 /// # Example
 ///
 /// ```no_run
@@ -103,6 +110,13 @@ pub fn build_fst_set(input_path: &str, fst_path: &str) -> Result<(), Box<dyn Err
 ///
 /// * `Ok(Set<Mmap>)` - The memory-mapped FST set
 /// * `Err(Box<dyn Error>)` if the file cannot be opened or mapped
+///
+/// # Errors
+///
+/// This function will return an error if:
+/// * The FST file cannot be found or opened
+/// * The file cannot be memory-mapped
+/// * The file is not a valid FST index
 ///
 /// # Safety
 ///
@@ -153,6 +167,7 @@ pub fn load_fst_set(fst_path: &str) -> Result<Set<Mmap>, Box<dyn Error>> {
 ///     println!("Found: {}", chemical);
 /// }
 /// ```
+#[must_use]
 pub fn prefix_search(set: &Set<Mmap>, prefix: &str, max_results: usize) -> Vec<String> {
     let mut results = Vec::new();
     let mut stream = set
@@ -188,6 +203,11 @@ pub fn prefix_search(set: &Set<Mmap>, prefix: &str, max_results: usize) -> Vec<S
 ///
 /// * `Ok(Vec<String>)` - A vector of strings containing the matching chemical names
 /// * `Err(Box<dyn Error>)` if an error occurs during search
+///
+/// # Errors
+///
+/// This function will return an error if:
+/// * There's an issue with UTF-8 encoding while processing strings
 ///
 /// # Example
 ///
@@ -242,6 +262,11 @@ pub fn substring_search(
 /// * `Ok(usize)` - The number of keys preloaded from the FST
 /// * `Err(Box<dyn Error>)` if an error occurs during preloading
 ///
+/// # Errors
+///
+/// This function will return an error if:
+/// * There's an issue with iterating through the FST entries
+///
 /// # Example
 ///
 /// ```no_run
@@ -255,11 +280,11 @@ pub fn preload_fst_set(set: &Set<Mmap>) -> Result<usize, Box<dyn Error>> {
     // Force the OS to load parts of the FST into memory by performing a traversal
     let mut stream = set.stream().into_stream();
     let mut count = 0;
-    
+
     // Just iterate through the set to touch all pages
-    while let Some(_) = stream.next() {
+    while stream.next().is_some() {
         count += 1;
     }
-    
+
     Ok(count)
 }
