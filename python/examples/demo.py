@@ -131,7 +131,10 @@ def run_performance_tests(fst):
 
     print(f"Total time: {total_time:.3f} seconds")
     print(f"Average time per search: {avg_time:.6f} seconds")
-    print(f"Searches per second: {1/avg_time:.1f}")
+    if avg_time == 0:
+        print("Searches per second: inf (avg_time is zero)")
+    else:
+        print(f"Searches per second: {1/avg_time:.1f}")
 
 
 def demonstrate_preloading_effect(chemfst, fst_path):
@@ -207,7 +210,7 @@ def main():
     run_performance_tests(fst)
     demonstrate_preloading_effect(chemfst, fst_path)
 
-    print(f"\n[OK] ChemFST examples completed successfully!")
+    print("\n[OK] ChemFST examples completed successfully!")
     print("\nNext steps:")
     print("- Try modifying the search terms in the examples")
     print("- Experiment with different max_results values")
