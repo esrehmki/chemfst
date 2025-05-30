@@ -14,7 +14,6 @@ Run this script locally to validate the workflow before pushing changes.
 import os
 import sys
 import subprocess
-import tempfile
 import platform
 from pathlib import Path
 
@@ -148,7 +147,7 @@ $lineCount = (Get-Content "data\\chemical_names.txt" | Measure-Object -Line).Lin
 Write-Host "... ($lineCount total lines)"
 '''
         try:
-            result = run_command(
+            run_command(
                 powershell_cmd,
                 "Testing Windows PowerShell file verification",
                 shell_type="powershell"
@@ -178,12 +177,12 @@ Write-Host "... ($lineCount total lines)"
     # Step 7: Validate test data content
     project_test_file = project_root / "data" / "chemical_names.txt"
     chemical_names = read_chemical_names(project_test_file)
-    print(f"\n[INFO] Test Data Summary:")
+    print("\n[INFO] Test Data Summary:")
     print(f"   Total chemical names: {len(chemical_names)}")
     print(f"   First few entries: {', '.join(chemical_names[:5])}")
     print(f"   Data source: {project_test_file}")
 
-    print(f"\n[INFO] Platform Compatibility:")
+    print("\n[INFO] Platform Compatibility:")
     print(f"   Current OS: {platform.system()}")
     if platform.system() == "Windows":
         print("   [OK] Windows PowerShell commands tested successfully")

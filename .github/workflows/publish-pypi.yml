@@ -1,0 +1,138 @@
+name: Build and Publish Python Package
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build-linux:
+    name: Build Wheels on Linux
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build wheels for Python 3.11, 3.12, and 3.13
+        uses: PyO3/maturin-action@v1
+        with:
+          command: build
+          args: --release --out dist -i python3.11 -i python3.12 -i python3.13
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-package-linux
+          path: dist/
+
+  build-windows:
+    name: Build Wheels on Windows
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        python-version: [3.11, 3.12, 3.13]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install maturin
+        run: pip install maturin
+
+      - name: Build wheel
+        run: maturin build --release --out dist
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-package-windows-${{ matrix.python-version }}
+          path: dist/
+
+  build-macos:
+    name: Build Wheels on macOS
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        python-version: [3.11, 3.12, 3.13]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install maturin
+        run: pip install maturin
+
+      - name: Build wheel
+        run: maturin build --release --out dist
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-package-macos-${{ matrix.python-version }}
+          path: dist/
+
+  publish:
+    name: Publish to PyPI
+    needs: [build-linux, build-windows, build-macos]
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi_publish
+      url: https://pypi.org/project/chemfst/
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: python-package-linux
+          path: dist/
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: python-package-windows-3.11
+          path: dist/
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: python-package-windows-3.12
+          path: dist/
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: python-package-windows-3.13
+          path: dist/
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: python-package-macos-3.11
+          path: dist/
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: python-package-macos-3.12
+          path: dist/
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: python-package-macos-3.13
+          path: dist/
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
