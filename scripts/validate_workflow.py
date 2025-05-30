@@ -115,10 +115,16 @@ def main():
         "Installing Python dependencies"
     )
 
-    # Step 2: Build Python package
+    # Step 2: Build Python package (using build + pip install like GitHub Actions)
     run_command(
-        "maturin develop --manifest-path chemfst-py/Cargo.toml",
+        "maturin build --manifest-path chemfst-py/Cargo.toml --out dist",
         "Building Python package with maturin"
+    )
+
+    # Step 2b: Install the built wheel
+    run_command(
+        "python -m pip install dist/*.whl",
+        "Installing built Python package"
     )
 
     # Step 3: Run tests

@@ -66,7 +66,9 @@ jobs:
           python -m pip install maturin pytest
 
       - name: Build Python package
-        run: maturin develop --manifest-path chemfst-py/Cargo.toml
+        run: |
+          maturin build --manifest-path chemfst-py/Cargo.toml --out dist
+          python -m pip install dist/*.whl
 
       - name: Verify test data file exists (Unix)
         run: |
@@ -130,7 +132,9 @@ jobs:
           python -m pip install maturin pytest pytest-cov
 
       - name: Build Python package for coverage
-        run: maturin develop --manifest-path chemfst-py/Cargo.toml
+        run: |
+          maturin build --manifest-path chemfst-py/Cargo.toml --out dist
+          python -m pip install dist/*.whl
 
       - name: Verify test data file exists (Unix)
         run: |

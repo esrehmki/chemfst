@@ -77,7 +77,8 @@ cd ChemFST
 python -m pip install --upgrade pip maturin pytest
 
 # Build Python package
-maturin develop --manifest-path chemfst-py/Cargo.toml
+maturin build --manifest-path chemfst-py/Cargo.toml --out dist
+python -m pip install dist/*.whl
 
 # Run tests
 python -m pytest python/tests/ -v
@@ -93,6 +94,10 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip maturin pytest
+
+# Build and install package
+maturin build --manifest-path chemfst-py/Cargo.toml --out dist
+python -m pip install dist/*.whl
 ```
 
 ## Path Handling
@@ -159,6 +164,12 @@ The workflow automatically tests on `windows-latest` with:
 error: Microsoft Visual C++ 14.0 is required
 ```
 **Solution**: Install Visual Studio Build Tools or Visual Studio Community
+
+**Issue**: Maturin virtual environment error
+```
+Couldn't find a virtualenv or conda environment
+```
+**Solution**: Use `maturin build` + `pip install dist/*.whl` instead of `maturin develop`
 
 ### Path Issues
 **Issue**: Path separator conflicts

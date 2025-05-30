@@ -50,8 +50,8 @@ ChemFST uses GitHub Actions for continuous integration and deployment, ensuring 
    - Use existing chemical names from the tracked file
 
 4. **Package Building**
-   - Use maturin to build Python bindings from Rust code
-   - Development install for testing
+   - Use maturin to build Python bindings from Rust code (wheel format)
+   - Install built wheel with pip (avoids virtual environment requirement)
 
 5. **Testing**
    - Run pytest suite with verbose output
@@ -111,6 +111,10 @@ This script replicates the CI environment locally:
 # Test Rust components
 cargo test
 
+# Build and install Python package
+maturin build --manifest-path chemfst-py/Cargo.toml --out dist
+pip install dist/*.whl
+
 # Test Python components
 pytest python/tests/ -v
 
@@ -139,8 +143,8 @@ python python/examples/demo.py
 - **Solution**: Verify `data/chemical_names.txt` exists in repository and has content
 
 #### Build Failures
-- **Cause**: Rust toolchain issues
-- **Solution**: Check Rust installation and dependencies
+- **Cause**: Rust toolchain issues or maturin virtual environment errors
+- **Solution**: Check Rust installation and dependencies, use `maturin build` + `pip install` instead of `maturin develop`
 
 #### Test Failures
 - **Cause**: Platform-specific path or command issues
