@@ -67,8 +67,8 @@ jobs:
 
       - name: Build Python package
         run: |
-          maturin build --manifest-path chemfst-py/Cargo.toml --out dist
-          python -m pip install dist/*.whl
+          maturin build --manifest-path chemfst-py\Cargo.toml --out dist
+          python -m pip install dist\*.whl
 
       - name: Verify test data file exists (Unix)
         run: |
