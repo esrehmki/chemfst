@@ -4,199 +4,83 @@
 [![Rust CI](https://github.com/esrehmki/chemfst/actions/workflows/rust.yml/badge.svg)](https://github.com/esrehmki/chemfst/actions/workflows/rust.yml)
 [![Docs](https://img.shields.io/badge/docs-mdBook-blue)](https://esrehmki.github.io/chemfst/)
 
+ChemFST is a high-performance chemical name search library using Finite State Transducers (FSTs) for efficient search and autocomplete of chemical compound names. The project provides both a native Rust library and Python bindings.
 
-ChemFST is a high-performance chemical name search library using Finite State Transducers (FSTs) to provide efficient searches of systematic and trivial names of chemical compounds in milliseconds. It's particularly useful for autocomplete features and searching through large chemical compound databases.
+- **Rust library:** Fast, memory-efficient, and suitable for large-scale chemical name search and autocomplete.
+- **Python bindings:** Easy integration with Python projects, powered by the same Rust core.
 
-## Features
+For detailed usage, API reference, and in-depth explanations, please see the [ChemFST Documentation (mdBook)](https://esrehmki.github.io/chemfst/).
 
-- Memory-efficient indexing using Finite State Transducers
-- Extremely fast prefix-based searches (autocomplete)
-- Case-insensitive substring searches
-- Memory-mapped file access for optimal performance
-- Simple API with just a few functions
-
-## Setup
-
-### Prerequisites
-
-- [Rust](https://www.rust-lang.org/tools/install) 1.56.0 or higher
-- Cargo (comes with Rust)
-
-### Installation
-
-Add this to your `Cargo.toml`:
-
-```toml
-[dependencies]
-chemfst = "0.1.1"
-```
-
-## Using the Library
-
-### Basic Usage
-
-```rust
-use chemfst::{build_fst_set, load_fst_set, prefix_search, substring_search};
-use std::error::Error;
-
-fn main() -> Result<(), Box<dyn Error>> {
-    // Step 1: Create an index from a list of chemical names (one term per line)
-    // Note: The .fst file is generated and not distributed with the package
-    // The repository includes a sample data/chemical_names.txt with 32+ chemical names
-    let input_path = "data/chemical_names.txt";
-    let fst_path = "data/chemical_names.fst";
-    build_fst_set(input_path, fst_path)?;
-
-    // Step 2: Load the index into memory
-    let set = load_fst_set(fst_path)?;
-
-    // Step 3: Perform searches
-
-    // Prefix search (autocomplete)
-    let prefix_results = prefix_search(&set, "acet", 10); // Find up to 10 terms starting with "acet"
-
-    // Substring search
-    let substring_results = substring_search(&set, "enz", 10)?; // Find up to 10 terms containing "enz"
-
-    Ok(())
-}
-```
-
-### API Reference
-## Functions
-
-#### `build_fst_set(input_path: &str, fst_path: &str) -> Result<(), Box<dyn Error>>`
-
-Creates an FST set from a list of chemical names in a text file. The resulting .fst file is generated and not distributed with the package.
-
-- `input_path`: Path to a text file with one chemical name per line
-- `fst_path`: Path where the FST index will be saved
-
-#### `load_fst_set(fst_path: &str) -> Result<Set<Mmap>, Box<dyn Error>>`
-
-Loads a previously created FST set from disk using memory mapping.
-
-- `fst_path`: Path to the FST index file
-- Returns: A memory-mapped FST Set
-
-#### `prefix_search(set: &Set<Mmap>, prefix: &str, max_results: usize) -> Vec<String>`
-
-Performs a prefix-based search (autocomplete).
-
-- `set`: The FST Set to search through
-- `prefix`: The prefix to search for
-- `max_results`: Maximum number of results to return
-- Returns: A vector of matching chemical names
-
-#### `substring_search(set: &Set<Mmap>, substring: &str, max_results: usize) -> Result<Vec<String>, Box<dyn Error>>`
-
-Performs a case-insensitive substring search.
-
-- `set`: The FST Set to search through
-- `substring`: The substring to search for
-- `max_results`: Maximum number of results to return
-- Returns: A vector of matching chemical names
+---
 
 ## Development
 
 ### Project Structure
 
-- `src/lib.rs` - Core library functionality
-- `src/main.rs` - Example binary that demonstrates the library
-- `tests/` - Integration tests
+- `src/` – Rust library source code
+- `python/` – Python bindings and packaging
+- `docs/` – Documentation (mdBook sources)
+- `tests/` – Integration and unit tests
 
-### Setting Up Development Environment
+### Local Setup
 
-1. Clone the repository:
+#### Rust
+
+1. Install [Rust](https://www.rust-lang.org/tools/install) (1.56.0 or higher).
+2. Clone the repository:
    ```bash
-   git clone <repository_url>
+   git clone https://github.com/esrehmki/chemfst.git
    cd chemfst
    ```
-
-2. Build the project:
+3. Build the project:
    ```bash
    cargo build
    ```
-
-3. Run the example:
+4. Run tests:
    ```bash
-   cargo run
+   cargo test
    ```
 
-### Running Tests
+#### Python
 
-Run all tests:
-```bash
-cargo test
-```
+1. Requires Python 3.11 or higher.
+2. Install [maturin](https://github.com/PyO3/maturin) for building the Python bindings:
+   ```bash
+   pip install maturin
+   ```
+3. Build and install the Python package:
+   ```bash
+   cd python
+   maturin develop
+   ```
+4. Run Python tests:
+   ```bash
+   pytest
+   ```
 
-### Adding New Tests
+### Continuous Integration
 
-Add new integration tests to the `tests/fst_search_tests.rs` file or create additional test files in the `tests` directory.
-
-## Continuous Integration
-
-The project uses GitHub Actions for continuous integration and testing across multiple platforms and Python versions.
-
-### GitHub Workflows
-
-#### Rust CI (`rust.yml`)
-- **Platforms**: Ubuntu, macOS, Windows
-- **Rust versions**: stable, beta
-- **Features**: Build, test, clippy linting, format checking, code coverage
-
-#### Python CI (`python.yml`)
-- **Platforms**: Ubuntu, macOS, Windows
-- **Python versions**: 3.11, 3.12, 3.13
-- **Features**:
-  - Automated FST file generation from test data
-  - Cross-platform testing
-  - Example execution validation
-  - Code coverage reporting
-
-### Local Validation
-
-Before pushing changes, validate the workflow locally:
-
-```bash
-# Run the validation script
-python scripts/validate_workflow.py
-```
-
-This script:
-- Creates test data files
-- Builds the Python package
-- Runs all tests
-- Validates examples work correctly
-
-### FST File Generation in CI
-
-The workflows automatically create test data files since FST files are not distributed with the package. Each platform creates the required `data/chemical_names.txt` with sample chemical names for testing.
+- GitHub Actions workflows for both Rust and Python ensure cross-platform compatibility and code quality.
+- See `.github/workflows/` for workflow definitions.
 
 ### Contributing
 
-Contributions are welcome! Here's how you can contribute:
+Contributions are welcome! To contribute:
 
-1. Fork the repository
-2. Create a new branch (`git checkout -b feature/your-feature-name`)
-3. Make your changes
-4. Run the tests (`cargo test`)
-5. Commit your changes (`git commit -m 'Add some feature'`)
-6. Push to the branch (`git push origin feature/your-feature-name`)
-7. Open a Pull Request
+1. Fork the repository.
+2. Create a new branch:
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+3. Make your changes and add tests.
+4. Run all tests to ensure nothing is broken.
+5. Commit and push your changes.
+6. Open a Pull Request.
 
-## Performance Considerations
-
-- FST sets are immutable. If your chemical database changes, you'll need to rebuild the index.
-- For large chemical databases, consider building the index as an offline process.
-- Memory-mapped files provide excellent performance but require care when the underlying file changes.
-
-## License
+### License
 
 [MIT License](LICENSE)
 
-## Credits
+---
 
-This project uses the following key dependencies:
-- [fst](https://crates.io/crates/fst) - Finite State Transducer implementation
-- [memmap2](https://crates.io/crates/memmap2) - Memory mapping functionality
+For all usage instructions, API details, and advanced topics, please visit the [ChemFST Documentation (mdBook)](https://esrehmki.github.io/chemfst/).
