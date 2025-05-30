@@ -1,5 +1,5 @@
 # misc
-chemical_names.fst
+data/chemical_names.fst
 # Rust ignores
 /target/
 /chemfst-py/target/

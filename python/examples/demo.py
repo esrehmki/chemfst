@@ -26,15 +26,15 @@ def main():
         sys.exit(1)
 
     # Paths for our example files
-    input_path = Path("chemical_names.txt")
-    fst_path = Path("chemical_names.fst")
+    input_path = Path("data/chemical_names.txt")
+    fst_path = Path("data/chemical_names.fst")
 
     # Example 1: Building an FST index
     print("\n1. Building an FST index")
     print("------------------------")
     if not input_path.exists():
         print(f"Input file not found: {input_path}")
-        print("Please create a chemical_names.txt file with one chemical name per line.")
+        print("Please create a data/chemical_names.txt file with one chemical name per line.")
         sys.exit(1)
 
     if fst_path.exists():

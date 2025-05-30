@@ -43,8 +43,8 @@ use std::error::Error;
 
 fn main() -> Result<(), Box<dyn Error>> {
     // Step 1: Create an index from a list of chemical names (one term per line)
-    let input_path = "chemical_names.txt";
-    let fst_path = "chemical_names.fst";
+    let input_path = "data/chemical_names.txt";
+    let fst_path = "data/chemical_names.fst";
     build_fst_set(input_path, fst_path)?;
 
     // Step 2: Load the index into memory

@@ -16,15 +16,15 @@ from chemfst import ChemicalFST, build_fst
 def main():
     """Run example ChemFST operations"""
     # Paths for our files
-    input_path = Path("chemical_names.txt")
-    fst_path = Path("chemical_names.fst")
+    input_path = Path("data/chemical_names.txt")
+    fst_path = Path("data/chemical_names.fst")
 
     # Check if we need to build the FST index
     if not fst_path.exists():
         print(f"Building FST index from {input_path}...")
         if not input_path.exists():
             print(f"Error: Chemical names file not found at {input_path}")
-            print("Please create a chemical_names.txt file with one chemical name per line")
+            print("Please create a data/chemical_names.txt file with one chemical name per line")
             sys.exit(1)
 
         build_fst(input_path, fst_path)

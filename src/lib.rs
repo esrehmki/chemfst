@@ -19,8 +19,8 @@
 //!
 //! fn main() -> Result<(), Box<dyn Error>> {
 //!     // Build an FST index from a list of chemical names
-//!     let input_path = "chemical_names.txt";
-//!     let fst_path = "chemical_names.fst";
+//!     let input_path = "data/chemical_names.txt";
+//!     let fst_path = "data/chemical_names.fst";
 //!     build_fst_set(input_path, fst_path)?;
 //!
 //!     // Load the index into memory efficiently
@@ -73,7 +73,7 @@ use std::io::{BufRead, BufReader};
 /// ```no_run
 /// use chemfst::build_fst_set;
 ///
-/// let result = build_fst_set("chemical_names.txt", "chemical_names.fst");
+/// let result = build_fst_set("data/chemical_names.txt", "data/chemical_names.fst");
 /// assert!(result.is_ok());
 /// ```
 pub fn build_fst_set(input_path: &str, fst_path: &str) -> Result<(), Box<dyn Error>> {
@@ -129,10 +129,10 @@ pub fn build_fst_set(input_path: &str, fst_path: &str) -> Result<(), Box<dyn Err
 /// use chemfst::{build_fst_set, load_fst_set};
 ///
 /// // First build the index
-/// build_fst_set("chemical_names.txt", "chemical_names.fst").unwrap();
+/// build_fst_set("data/chemical_names.txt", "data/chemical_names.fst").unwrap();
 ///
 /// // Then load it
-/// let set = load_fst_set("chemical_names.fst").unwrap();
+/// let set = load_fst_set("data/chemical_names.fst").unwrap();
 /// ```
 pub fn load_fst_set(fst_path: &str) -> Result<Set<Mmap>, Box<dyn Error>> {
     let file = OpenOptions::new().read(true).open(fst_path)?;
@@ -161,7 +161,7 @@ pub fn load_fst_set(fst_path: &str) -> Result<Set<Mmap>, Box<dyn Error>> {
 /// ```no_run
 /// use chemfst::{load_fst_set, prefix_search};
 ///
-/// let set = load_fst_set("chemical_names.fst").unwrap();
+/// let set = load_fst_set("data/chemical_names.fst").unwrap();
 /// let results = prefix_search(&set, "acet", 10);
 /// for chemical in results {
 ///     println!("Found: {}", chemical);
@@ -214,7 +214,7 @@ pub fn prefix_search(set: &Set<Mmap>, prefix: &str, max_results: usize) -> Vec<S
 /// ```no_run
 /// use chemfst::{load_fst_set, substring_search};
 ///
-/// let set = load_fst_set("chemical_names.fst").unwrap();
+/// let set = load_fst_set("data/chemical_names.fst").unwrap();
 /// let results = substring_search(&set, "benz", 10).unwrap();
 /// for chemical in results {
 ///     println!("Found: {}", chemical);
@@ -272,7 +272,7 @@ pub fn substring_search(
 /// ```no_run
 /// use chemfst::{load_fst_set, preload_fst_set};
 ///
-/// let set = load_fst_set("chemical_names.fst").unwrap();
+/// let set = load_fst_set("data/chemical_names.fst").unwrap();
 /// let count = preload_fst_set(&set).unwrap();
 /// println!("Preloaded {} chemical names into memory", count);
 /// ```

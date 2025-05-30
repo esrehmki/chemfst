@@ -16,7 +16,7 @@ try:
         print("\nTesting ChemicalFST class:")
         try:
             # Create an instance of ChemicalFST
-            fst = module.ChemicalFST("chemical_names.fst")
+            fst = module.ChemicalFST("data/chemical_names.fst")
             print("✅ Successfully created ChemicalFST instance")
 
             # Try a prefix search

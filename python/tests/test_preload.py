@@ -113,7 +113,7 @@ def test_preload():
     print("ChemFST Preloading Performance Test")
     print("==================================")
 
-    fst_path = Path("chemical_names.fst")
+    fst_path = Path("data/chemical_names.fst")
     if not fst_path.exists():
         print(f"Error: FST file not found at {fst_path}")
         print("Please build the FST first using ChemFST")

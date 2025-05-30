@@ -2,8 +2,8 @@ use chemfst::{build_fst_set, load_fst_set, prefix_search, substring_search};
 use std::error::Error;
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let input_path = "chemical_names.txt";
-    let fst_path = "chemical_names.fst";
+    let input_path = "data/chemical_names.txt";
+    let fst_path = "data/chemical_names.fst";
 
     // Step 1: Create the index (do this weekly after updates).
     build_fst_set(input_path, fst_path)?;

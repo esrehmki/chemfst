@@ -27,10 +27,10 @@ Requires Python 3.11 or higher.
 from chemfst import ChemicalFST, build_fst
 
 # Build an FST index from a list of chemical names (only needed once)
-build_fst("chemical_names.txt", "chemical_names.fst")
+build_fst("data/chemical_names.txt", "data/chemical_names.fst")
 
 # Load the FST for searching
-fst = ChemicalFST("chemical_names.fst")
+fst = ChemicalFST("data/chemical_names.fst")
 
 # Prefix search (autocomplete)
 matches = fst.prefix_search("acet", max_results=10)
