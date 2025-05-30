@@ -108,7 +108,7 @@ def measure_search_performance(fst_path, iterations=100, with_preload=False):
         "avg_subsequent_substring": avg_sub_subsequent,
     }
 
-def main():
+def test_preload():
     """Run preload testing"""
     print("ChemFST Preloading Performance Test")
     print("==================================")
@@ -149,4 +149,4 @@ def main():
     print(f"Substring search (subsequent): {substring_subsequent_improvement:.1f}% faster")
 
 if __name__ == "__main__":
-    main()
+    test_preload()

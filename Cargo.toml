@@ -2,21 +2,21 @@
 name = "chemfst"
 version = "0.1.0"
 edition = "2021"
-authors = ["ChemFST Team"]
+authors = ["Emanuel Ehmki"]
 description = "A high-performance chemical name search library using Finite State Transducers (FSTs)"
 license = "MIT"
-repository = "https://github.com/yourusername/ChemFST"
+repository = "https://github.com/esrehmki/ChemFST"
 documentation = "https://docs.rs/chemfst"
 readme = "README.md"
-keywords = ["chemistry", "search", "fst", "autocomplete", "chemical"]
+keywords = ["chemistry", "search", "fst", "autocomplete", "cheminformatics"]
 categories = ["science", "text-processing", "data-structures"]
 include = [
-    "/src/**/*",
-    "/tests/**/*",
-    "/Cargo.toml",
-    "/README.md",
-    "/LICENSE",
-    "/CHANGELOG.md"
+  "/src/**/*",
+  "/tests/**/*",
+  "/Cargo.toml",
+  "/README.md",
+  "/LICENSE",
+  "/CHANGELOG.md",
 ]
 
 [dependencies]

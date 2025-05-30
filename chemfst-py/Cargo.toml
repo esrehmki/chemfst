@@ -9,6 +9,6 @@ crate-type = ["cdylib"]
 
 [dependencies]
 chemfst = { path = ".." }
-pyo3 = { version = "0.19", features = ["extension-module", "abi3-py311"] }
+pyo3 = { version = "0.21", features = ["extension-module", "abi3-py311"] }
 memmap2 = "0.9"
 fst = "0.4"

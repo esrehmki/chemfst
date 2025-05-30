@@ -8,6 +8,7 @@ chemical name searching using Finite State Transducers.
 
 import time
 import sys
+import os
 from pathlib import Path
 from chemfst import ChemicalFST, build_fst
 
@@ -31,7 +32,8 @@ def main():
 
     print(f"Loading FST index from {fst_path}...")
     start = time.time()
-    fst = ChemicalFST(fst_path)
+
+    fst = ChemicalFST(os.fspath(fst_path))
     load_time = time.time() - start
     print(f"FST loaded in {load_time:.3f} seconds")
 

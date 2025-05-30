@@ -7,7 +7,7 @@ use fst::Set;
 
 /// Python module for ChemFST: A high-performance chemical name search library using Finite State Transducers
 #[pymodule]
-fn chemfst(_py: Python, m: &PyModule) -> PyResult<()> {
+fn chemfst(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<ChemicalFST>()?;
     m.add_function(wrap_pyfunction!(build_fst, m)?)?;
     m.add("__doc__", "ChemFST Python bindings for high-performance chemical name searching using Finite State Transducers (FSTs).")?;
