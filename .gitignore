@@ -1,5 +1,7 @@
 # misc
+# Generated FST files (not distributed with package)
 data/chemical_names.fst
+*.fst
 # Rust ignores
 /target/
 /chemfst-py/target/

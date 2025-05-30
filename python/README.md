@@ -26,7 +26,8 @@ Requires Python 3.11 or higher.
 ```python
 from chemfst import ChemicalFST, build_fst
 
-# Build an FST index from a list of chemical names (only needed once)
+# Build an FST index from a list of chemical names (required - not distributed)
+# Note: The .fst file is generated and not included in the package
 build_fst("data/chemical_names.txt", "data/chemical_names.fst")
 
 # Load the FST for searching
@@ -57,10 +58,10 @@ ethanol
 
 ### `build_fst(input_path, output_path)`
 
-Create an FST index from a list of chemical names in a text file.
+Create an FST index from a list of chemical names in a text file. The resulting .fst file is generated and not distributed with the package.
 
 - **input_path**: Path to text file containing chemical names (one per line)
-- **output_path**: Path where the FST index will be saved
+- **output_path**: Path where the FST index will be saved (not distributed with package)
 
 ### `ChemicalFST(fst_path)`
 

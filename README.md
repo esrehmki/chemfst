@@ -43,6 +43,7 @@ use std::error::Error;
 
 fn main() -> Result<(), Box<dyn Error>> {
     // Step 1: Create an index from a list of chemical names (one term per line)
+    // Note: The .fst file is generated and not distributed with the package
     let input_path = "data/chemical_names.txt";
     let fst_path = "data/chemical_names.fst";
     build_fst_set(input_path, fst_path)?;
@@ -63,10 +64,11 @@ fn main() -> Result<(), Box<dyn Error>> {
 ```
 
 ### API Reference
+## Functions
 
 #### `build_fst_set(input_path: &str, fst_path: &str) -> Result<(), Box<dyn Error>>`
 
-Creates an FST set from a list of chemical names in a text file.
+Creates an FST set from a list of chemical names in a text file. The resulting .fst file is generated and not distributed with the package.
 
 - `input_path`: Path to a text file with one chemical name per line
 - `fst_path`: Path where the FST index will be saved

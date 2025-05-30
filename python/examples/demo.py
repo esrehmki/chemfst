@@ -1,61 +1,68 @@
 #!/usr/bin/env python3
 """
-ChemFST Examples: Demonstration of Python bindings for chemical name searching
+ChemFST Examples: Comprehensive demonstration of Python bindings
 
 This script demonstrates how to use the ChemFST Python bindings for high-performance
-chemical name searching using Finite State Transducers (FSTs).
+chemical name searching using Finite State Transducers (FSTs). It includes basic usage,
+performance testing, and preloading demonstrations.
 """
 
-import os
 import time
 import sys
+import os
 from pathlib import Path
 
 
-def main():
-    """Run comprehensive examples demonstrating ChemFST capabilities"""
-    print("ChemFST Python Bindings Demonstration")
-    print("====================================\n")
-
+def check_imports():
+    """Import chemfst module and handle import errors"""
     try:
         import chemfst
         print(f"Successfully imported chemfst module (version: {getattr(chemfst, '__version__', 'unknown')})")
+        return chemfst
     except ImportError as e:
         print(f"Error importing chemfst module: {e}")
         print("Make sure you've built and installed the Python bindings.")
         sys.exit(1)
 
-    # Paths for our example files
+
+def setup_file_paths():
+    """Setup and validate file paths"""
     input_path = Path("data/chemical_names.txt")
     fst_path = Path("data/chemical_names.fst")
 
-    # Example 1: Building an FST index
-    print("\n1. Building an FST index")
-    print("------------------------")
     if not input_path.exists():
         print(f"Input file not found: {input_path}")
         print("Please create a data/chemical_names.txt file with one chemical name per line.")
         sys.exit(1)
 
-    if fst_path.exists():
-        print(f"FST index already exists at {fst_path}")
-        print("Using existing FST index. (Set rebuild=True to rebuild)")
-    else:
-        print(f"Building FST index from {input_path}...")
-        start = time.time()
-        chemfst.build_fst(str(input_path), str(fst_path))
-        build_time = time.time() - start
-        print(f"✅ Built FST index in {build_time:.3f} seconds")
+    return input_path, fst_path
 
-    # Example 2: Loading an FST
-    print("\n2. Loading an FST index")
-    print("----------------------")
+
+def build_fst_index(chemfst, input_path, fst_path):
+    """Build FST index from source file (always required)"""
+    print("\n1. Building FST index from source file")
+    print("--------------------------------------")
+    print(f"Building FST index from {input_path}...")
+    print("Note: The FST file is not distributed with the package and must be built from the source data.")
+
     start = time.time()
-    fst = chemfst.ChemicalFST(str(fst_path))
-    load_time = time.time() - start
-    print(f"✅ Loaded FST index in {load_time:.3f} seconds")
+    chemfst.build_fst(str(input_path), str(fst_path))
+    build_time = time.time() - start
+    print(f"✅ Built FST index in {build_time:.3f} seconds")
+    print(f"FST index saved to {fst_path}")
 
-    # Example 3: Preloading the FST for better performance
+
+def load_and_preload_fst(chemfst, fst_path):
+    """Load FST and preload it into memory"""
+    # Load FST
+    print(f"\n2. Loading FST index from {fst_path}")
+    print("-----------------------------------")
+    start = time.time()
+    fst = chemfst.ChemicalFST(os.fspath(fst_path))
+    load_time = time.time() - start
+    print(f"✅ FST loaded in {load_time:.3f} seconds")
+
+    # Preload FST
     print("\n3. Preloading FST into memory")
     print("----------------------------")
     print("Preloading forces all pages of the FST into memory, improving search performance.")
@@ -64,68 +71,71 @@ def main():
     preload_time = time.time() - start
     print(f"✅ Preloaded {count} keys in {preload_time:.6f} seconds")
 
-    # Example 4: Prefix Search (Autocomplete)
+    return fst
+
+
+def demonstrate_prefix_search(fst):
+    """Demonstrate prefix search functionality"""
     print("\n4. Prefix search (autocomplete)")
     print("------------------------------")
-    prefixes = ["eth", "meth", "prop", "benz", "chlor", "a"]
+    prefixes = ["eth", "meth", "prop", "benz"]
 
     for prefix in prefixes:
         print(f"\nSearching for chemicals starting with '{prefix}':")
         start = time.time()
-        results = fst.prefix_search(prefix, 10)
+        results = fst.prefix_search(prefix, max_results=5)
         search_time = time.time() - start
 
         if results:
-            for i, chemical in enumerate(results, 1):
-                print(f"  {i}. {chemical}")
-            total = len(results)
-            print(f"✅ Found {total} result{'s' if total != 1 else ''} in {search_time:.6f} seconds")
+            for chemical in results:
+                print(f"  {chemical}")
+            print(f"Found {len(results)} results in {search_time:.6f} seconds")
         else:
             print("  No matching chemicals found")
 
-    # Example 5: Substring Search
+
+def demonstrate_substring_search(fst):
+    """Demonstrate substring search functionality"""
     print("\n5. Substring search")
     print("-----------------")
-    substrings = ["acid", "ol", "ene", "hydr", "carb"]
+    substrings = ["acid", "ol", "ene", "chlor"]
 
     for substring in substrings:
         print(f"\nSearching for chemicals containing '{substring}':")
         start = time.time()
-        results = fst.substring_search(substring, 10)
+        results = fst.substring_search(substring, max_results=5)
         search_time = time.time() - start
 
         if results:
-            for i, chemical in enumerate(results, 1):
-                print(f"  {i}. {chemical}")
-            total = len(results)
-            print(f"✅ Found {total} result{'s' if total != 1 else ''} in {search_time:.6f} seconds")
+            for chemical in results:
+                print(f"  {chemical}")
+            print(f"Found {len(results)} results in {search_time:.6f} seconds")
         else:
             print("  No matching chemicals found")
 
-    # Example 6: Performance Testing
-    print("\n6. Performance Testing")
-    print("--------------------")
-    iterations = 100
+
+def run_performance_tests(fst):
+    """Run performance testing"""
+    print("\n6. Performance Benchmark")
+    print("=======================")
     test_prefix = "a"
-    test_substring = "ol"
+    iterations = 100
 
-    print(f"Running {iterations} prefix searches for '{test_prefix}'...")
+    print(f"Performing {iterations} prefix searches for '{test_prefix}'...")
     start = time.time()
     for _ in range(iterations):
-        fst.prefix_search(test_prefix, 10)
-    prefix_time = time.time() - start
+        fst.prefix_search(test_prefix, max_results=10)
 
-    print(f"Running {iterations} substring searches for '{test_substring}'...")
-    start = time.time()
-    for _ in range(iterations):
-        fst.substring_search(test_substring, 10)
-    substring_time = time.time() - start
+    total_time = time.time() - start
+    avg_time = total_time / iterations
 
-    print("\nPerformance results:")
-    print(f"  Prefix search:    {prefix_time:.3f}s total, {prefix_time/iterations*1000:.3f}ms per operation")
-    print(f"  Substring search: {substring_time:.3f}s total, {substring_time/iterations*1000:.3f}ms per operation")
+    print(f"Total time: {total_time:.3f} seconds")
+    print(f"Average time per search: {avg_time:.6f} seconds")
+    print(f"Searches per second: {1/avg_time:.1f}")
 
-    # Example 7: Compare Performance With and Without Preloading
+
+def demonstrate_preloading_effect(chemfst, fst_path):
+    """Demonstrate the effect of preloading on search performance"""
     print("\n7. Effect of Preloading on Search Latency")
     print("----------------------------------------")
     print("To demonstrate the effect of preloading, we'll measure the first search")
@@ -135,11 +145,10 @@ def main():
 
     # Create a new FST instance without preloading
     fresh_fst = chemfst.ChemicalFST(str(fst_path))
-
-    # Test first search time for each letter
-    first_search_times = []
     letters = list("abcdefghijklmnopqrstuvwxyz")
 
+    # Test without preloading
+    first_search_times = []
     print("\nTesting first-time searches for each letter without preloading:")
     for letter in letters:
         start = time.time()
@@ -151,7 +160,7 @@ def main():
     avg_without_preload = sum(first_search_times) / len(first_search_times) * 1000
     max_without_preload = max(first_search_times) * 1000
 
-    # Now preload and test again
+    # Test with preloading
     print("\nPreloading FST...")
     count = fresh_fst.preload()
     print(f"Preloaded {count} keys")
@@ -176,7 +185,34 @@ def main():
     print(f"  With preloading:    avg={avg_with_preload:.3f}ms, max={max_with_preload:.3f}ms")
     print(f"  Improvement:        {improvement:.1f}% faster on average, {max_improvement:.1f}% faster for worst case")
 
-    print("\n✅ ChemFST demonstration completed successfully!")
+
+def main():
+    """Run comprehensive examples demonstrating ChemFST capabilities"""
+    print("ChemFST Python Bindings - Comprehensive Examples")
+    print("===============================================\n")
+
+    # Setup
+    chemfst = check_imports()
+    input_path, fst_path = setup_file_paths()
+
+    # Build FST index
+    build_fst_index(chemfst, input_path, fst_path)
+
+    # Load and preload FST
+    fst = load_and_preload_fst(chemfst, fst_path)
+
+    # Run demonstrations
+    demonstrate_prefix_search(fst)
+    demonstrate_substring_search(fst)
+    run_performance_tests(fst)
+    demonstrate_preloading_effect(chemfst, fst_path)
+
+    print("\n✅ ChemFST examples completed successfully!")
+    print("\nNext steps:")
+    print("- Try modifying the search terms in the examples")
+    print("- Experiment with different max_results values")
+    print("- Add your own chemical names to data/chemical_names.txt and rebuild the index")
+    print("- Note: The .fst file is generated and not included in the package distribution")
 
 
 if __name__ == "__main__":

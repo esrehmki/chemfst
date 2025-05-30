@@ -1,48 +1,46 @@
 #!/usr/bin/env python3
 """
-Test import script for ChemFST Python bindings.
-This script attempts to import the ChemFST module in different ways
-to see which imports work.
+Pytest unit tests for ChemFST Python bindings import functionality.
 """
 
-import sys
-import os
+import pytest
 
-def test_imports():
-    """Test various import patterns to see what works"""
-    print("Python version:", sys.version)
-    print("Current directory:", os.getcwd())
-    print("\nTrying various import patterns:")
+class TestChemFSTImports:
+    """Test class for ChemFST module imports"""
 
-    modules_to_try = [
-        "chemfst",
-        "chemfst_py",
-        "chemfst.chemfst_py"
-    ]
-
-    for module in modules_to_try:
+    def test_chemfst_module_import(self):
+        """Test that the main chemfst module can be imported"""
         try:
-            print(f"\nAttempting to import '{module}'...")
-            exec(f"import {module}")
-            print(f"✅ SUCCESS: '{module}' imported successfully")
-            # Try to see what's in the module
-            try:
-                print(f"   Contents of {module}:")
-                exec(f"for item in dir({module}): print(f'   - {{item}}')")
-            except Exception as e:
-                print(f"   Could not list contents: {e}")
-        except ImportError as e:
-            print(f"❌ FAILED: Could not import '{module}': {e}")
+            import chemfst
+            assert hasattr(chemfst, '__name__')
+        except ImportError:
+            pytest.fail("Failed to import chemfst module")
 
-    # Try to import specific items
-    for module in ["chemfst", "chemfst_py"]:
-        for item in ["ChemicalFST", "build_fst"]:
-            try:
-                print(f"\nAttempting to import {item} from {module}...")
-                exec(f"from {module} import {item}")
-                print(f"✅ SUCCESS: '{item}' imported from '{module}'")
-            except ImportError as e:
-                print(f"❌ FAILED: Could not import '{item}' from '{module}': {e}")
+    def test_chemical_fst_class_import(self):
+        """Test that ChemicalFST class can be imported from chemfst"""
+        try:
+            from chemfst import ChemicalFST
+            assert ChemicalFST is not None
+            assert callable(ChemicalFST)
+        except ImportError:
+            pytest.fail("Failed to import ChemicalFST from chemfst")
+
+    def test_build_fst_function_import(self):
+        """Test that build_fst function can be imported from chemfst"""
+        try:
+            from chemfst import build_fst
+            assert build_fst is not None
+            assert callable(build_fst)
+        except ImportError:
+            pytest.fail("Failed to import build_fst from chemfst")
+
+    def test_chemfst_module_contents(self):
+        """Test that chemfst module has expected attributes"""
+        import chemfst
+
+        expected_attributes = ['ChemicalFST', 'build_fst']
+        for attr in expected_attributes:
+            assert hasattr(chemfst, attr), f"chemfst module missing expected attribute: {attr}"
 
 if __name__ == "__main__":
-    test_imports()
+    pytest.main([__file__])
