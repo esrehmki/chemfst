@@ -2,9 +2,9 @@ name: Publish Crate
 
 on:
   push:
-    branches: [trunk]
     tags:
       - "v*.*.*"
+  workflow_dispatch:
 
 jobs:
   publish:
