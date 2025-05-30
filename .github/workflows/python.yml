@@ -65,10 +65,23 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install maturin pytest
 
-      - name: Build Python package
+      - name: Build Python package (Unix)
+        run: |
+          maturin build --manifest-path chemfst-py/Cargo.toml --out dist
+          wheel=$(ls dist/*.whl | head -n 1)
+          [ -z "$wheel" ] && echo "No wheel found!" && exit 1
+          python -m pip install "$wheel"
+        shell: bash
+        if: runner.os != 'Windows'
+
+      - name: Build Python package (Windows)
         run: |
           maturin build --manifest-path chemfst-py\Cargo.toml --out dist
-          python -m pip install dist\*.whl
+          $wheel = Get-ChildItem dist\*.whl | Select-Object -First 1
+          if ($wheel -eq $null) { Write-Host 'No wheel found!'; exit 1 }
+          python -m pip install $wheel.FullName
+        shell: powershell
+        if: runner.os == 'Windows'
 
       - name: Verify test data file exists (Unix)
         run: |
@@ -131,10 +144,23 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install maturin pytest pytest-cov
 
-      - name: Build Python package for coverage
+      - name: Build Python package for coverage (Unix)
         run: |
           maturin build --manifest-path chemfst-py/Cargo.toml --out dist
-          python -m pip install dist/*.whl
+          wheel=$(ls dist/*.whl | head -n 1)
+          [ -z "$wheel" ] && echo "No wheel found!" && exit 1
+          python -m pip install "$wheel"
+        shell: bash
+        if: runner.os != 'Windows'
+
+      - name: Build Python package for coverage (Windows)
+        run: |
+          maturin build --manifest-path chemfst-py\Cargo.toml --out dist
+          $wheel = Get-ChildItem dist\*.whl | Select-Object -First 1
+          if ($wheel -eq $null) { Write-Host 'No wheel found!'; exit 1 }
+          python -m pip install $wheel.FullName
+        shell: powershell
+        if: runner.os == 'Windows'
 
       - name: Verify test data file exists (Unix)
         run: |
