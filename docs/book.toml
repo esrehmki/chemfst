@@ -1,0 +1,28 @@
+[book]
+title = "ChemFST Documentation"
+author = "ChemFST Contributors"
+description = "Comprehensive documentation for the ChemFST project, following the Rust book style."
+language = "en"
+multilingual = false
+src = "src"
+
+[build]
+build-dir = "../book"
+
+[output.html]
+default-theme = "light"
+preferred-dark-theme = "navy"
+mathjax-support = true
+
+[preprocessor.links]
+# Optionally enable linkcheck or other preprocessors
+
+[output.linkcheck]
+optional = true
+# Uncomment to enable link checking
+# follow-web-links = true
+
+[output.epub]
+optional = true
+# Uncomment to enable epub output
+# optional = true
