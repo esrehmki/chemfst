@@ -23,13 +23,6 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-chemfst = { path = "path/to/chemfst" }
-```
-
-For a real-world application, you would publish the crate to [crates.io](https://crates.io/) and then specify:
-
-```toml
-[dependencies]
 chemfst = "0.1.0"
 ```
 

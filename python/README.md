@@ -2,6 +2,7 @@
 
 [![PyPI version](https://badge.fury.io/py/chemfst.svg)](https://badge.fury.io/py/chemfst)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Docs](https://img.shields.io/badge/docs-mdBook-blue)](https://esrehmki.github.io/chemfst/)
 
 Python bindings for ChemFST: a high-performance chemical name search library using Finite State Transducers (FSTs).
 
