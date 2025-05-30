@@ -180,13 +180,23 @@ def demonstrate_preloading_effect(chemfst, fst_path):
     avg_with_preload = sum(preloaded_search_times) / len(preloaded_search_times) * 1000
     max_with_preload = max(preloaded_search_times) * 1000
 
-    improvement = (avg_without_preload - avg_with_preload) / avg_without_preload * 100
-    max_improvement = (max_without_preload - max_with_preload) / max_without_preload * 100
+    if avg_without_preload == 0:
+        improvement = float('inf')
+    else:
+        improvement = (avg_without_preload - avg_with_preload) / avg_without_preload * 100
+
+    if max_without_preload == 0:
+        max_improvement = float('inf')
+    else:
+        max_improvement = (max_without_preload - max_with_preload) / max_without_preload * 100
 
     print("\nPreloading Performance Impact:")
     print(f"  Without preloading: avg={avg_without_preload:.3f}ms, max={max_without_preload:.3f}ms")
     print(f"  With preloading:    avg={avg_with_preload:.3f}ms, max={max_with_preload:.3f}ms")
-    print(f"  Improvement:        {improvement:.1f}% faster on average, {max_improvement:.1f}% faster for worst case")
+    if improvement == float('inf'):
+        print("  Improvement:        inf% faster on average (avg_without_preload is zero)")
+    else:
+        print(f"  Improvement:        {improvement:.1f}% faster on average, {max_improvement:.1f}% faster for worst case")
 
 
 def main():
