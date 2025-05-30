@@ -4,7 +4,7 @@ build-backend = "maturin"
 
 [project]
 name = "chemfst"
-version = "0.1.0"
+version = "0.1.1"
 description = "Python bindings for ChemFST - a high-performance chemical name search library"
 authors = [{ name = "Emanuel Ehmki" }]
 readme = "README.md"

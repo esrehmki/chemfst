@@ -28,7 +28,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-chemfst = "0.1.0"
+chemfst = "0.1.1"
 ```
 
 ## Using the Library
