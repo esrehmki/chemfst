@@ -11,17 +11,18 @@ import time
 import sys
 import os
 from pathlib import Path
+# from examples.utils.cross_platform_symbols import safe_checkmark, safe_crossmark
 
 
 def check_imports():
     """Import chemfst module and handle import errors"""
     try:
         import chemfst
-        print(f"Successfully imported chemfst module (version: {getattr(chemfst, '__version__', 'unknown')})")
+        print(f"[OK] Successfully imported chemfst module (version: {getattr(chemfst, '__version__', 'unknown')})")
         return chemfst
     except ImportError as e:
-        print(f"Error importing chemfst module: {e}")
-        print("Make sure you've built and installed the Python bindings.")
+        print(f"[FAIL] Error importing chemfst module: {e}")
+        print("INFO: Make sure you've built and installed the Python bindings.")
         sys.exit(1)
 
 
@@ -37,7 +38,6 @@ def setup_file_paths():
 
     return input_path, fst_path
 
-
 def build_fst_index(chemfst, input_path, fst_path):
     """Build FST index from source file (always required)"""
     print("\n1. Building FST index from source file")
@@ -48,7 +48,7 @@ def build_fst_index(chemfst, input_path, fst_path):
     start = time.time()
     chemfst.build_fst(str(input_path), str(fst_path))
     build_time = time.time() - start
-    print(f"✅ Built FST index in {build_time:.3f} seconds")
+    print(f"[OK] Built FST index in {build_time:.3f} seconds")
     print(f"FST index saved to {fst_path}")
 
 
@@ -60,7 +60,7 @@ def load_and_preload_fst(chemfst, fst_path):
     start = time.time()
     fst = chemfst.ChemicalFST(os.fspath(fst_path))
     load_time = time.time() - start
-    print(f"✅ FST loaded in {load_time:.3f} seconds")
+    print(f"[OK] FST loaded in {load_time:.3f} seconds")
 
     # Preload FST
     print("\n3. Preloading FST into memory")
@@ -69,7 +69,7 @@ def load_and_preload_fst(chemfst, fst_path):
     start = time.time()
     count = fst.preload()
     preload_time = time.time() - start
-    print(f"✅ Preloaded {count} keys in {preload_time:.6f} seconds")
+    print(f"[OK] Preloaded {count} keys in {preload_time:.6f} seconds")
 
     return fst
 
@@ -207,7 +207,7 @@ def main():
     run_performance_tests(fst)
     demonstrate_preloading_effect(chemfst, fst_path)
 
-    print("\n✅ ChemFST examples completed successfully!")
+    print(f"\n[OK] ChemFST examples completed successfully!")
     print("\nNext steps:")
     print("- Try modifying the search terms in the examples")
     print("- Experiment with different max_results values")

@@ -27,13 +27,13 @@ def read_chemical_names(file_path):
     except FileNotFoundError:
         return []
     except Exception as e:
-        print(f"Warning: Error reading {file_path}: {e}")
+        print(f"[WARN] Error reading {file_path}: {e}")
         return []
 
 
 def run_command(cmd, description, cwd=None, shell_type="auto"):
     """Run a command and handle errors."""
-    print(f"🔄 {description}...")
+    print(f"[RUN] {description}...")
     try:
         if shell_type == "powershell" and platform.system() == "Windows":
             result = subprocess.run(
@@ -44,10 +44,10 @@ def run_command(cmd, description, cwd=None, shell_type="auto"):
             result = subprocess.run(
                 cmd, shell=True, check=True, capture_output=True, text=True, cwd=cwd
             )
-        print(f"✅ {description} - Success")
+        print(f"[OK] {description} - Success")
         return result.stdout
     except subprocess.CalledProcessError as e:
-        print(f"❌ {description} - Failed")
+        print(f"[FAIL] {description} - Failed")
         print(f"Command: {cmd}")
         print(f"Error: {e.stderr}")
         sys.exit(1)
@@ -62,7 +62,7 @@ def create_test_data(data_dir, source_file=None):
         # Copy from existing source file
         import shutil
         shutil.copy2(source_file, test_file)
-        print(f"✅ Copied test data from {source_file} to: {test_file}")
+        print(f"[OK] Copied test data from {source_file} to: {test_file}")
     else:
       raise FileNotFoundError
 
@@ -85,9 +85,9 @@ def main():
 
     # Check if we're in a virtual environment
     if hasattr(sys, 'real_prefix') or (hasattr(sys, 'base_prefix') and sys.base_prefix != sys.prefix):
-        print("✅ Running in virtual environment")
+        print("[OK] Running in virtual environment")
     else:
-        print("⚠️  Not running in virtual environment - this is recommended")
+        print("[WARN] Not running in virtual environment - this is recommended")
 
     # Ensure test data exists
     project_data = project_root / "data"
@@ -97,17 +97,17 @@ def main():
     if not project_test_file.exists():
         # Create test data if it doesn't exist
         create_test_data(project_data)
-        print(f"✅ Created test data: {project_test_file}")
+        print(f"[OK] Created test data: {project_test_file}")
     else:
-        print(f"✅ Using existing test data: {project_test_file}")
+        print(f"[OK] Using existing test data: {project_test_file}")
         # Verify file has content and show info
         chemical_names = read_chemical_names(project_test_file)
         if not chemical_names:
-            print("⚠️  Test data file is empty or unreadable, creating fallback data")
+            print("[WARN] Test data file is empty or unreadable, creating fallback data")
             create_test_data(project_data)
         else:
-            print(f"   📊 Found {len(chemical_names)} chemical names")
-            print(f"   🧪 Sample: {', '.join(chemical_names[:3])}{'...' if len(chemical_names) > 3 else ''}")
+            print(f"   [INFO] Found {len(chemical_names)} chemical names")
+            print(f"   [INFO] Sample: {', '.join(chemical_names[:3])}{'...' if len(chemical_names) > 3 else ''}")
 
     # Step 1: Install dependencies
     run_command(
@@ -135,13 +135,13 @@ def main():
 
     # Step 4: Test file verification commands (Windows compatibility)
     if platform.system() == "Windows":
-        print("\n🔄 Testing Windows-specific commands...")
+        print("\n[RUN] Testing Windows-specific commands...")
         powershell_cmd = '''
 if (!(Test-Path "data\\chemical_names.txt")) {
     Write-Host "Error: data\\chemical_names.txt not found"
     exit 1
 }
-Write-Host "✅ Found existing data\\chemical_names.txt"
+Write-Host "[OK] Found existing data\\chemical_names.txt"
 Write-Host "File contents:"
 Get-Content "data\\chemical_names.txt" -Head 5
 $lineCount = (Get-Content "data\\chemical_names.txt" | Measure-Object -Line).Lines
@@ -153,12 +153,12 @@ Write-Host "... ($lineCount total lines)"
                 "Testing Windows PowerShell file verification",
                 shell_type="powershell"
             )
-            print("✅ Windows PowerShell commands work correctly")
+            print("[OK] Windows PowerShell commands work correctly")
         except Exception as e:
-            print(f"⚠️  PowerShell test failed: {e}")
+            print(f"[WARN] PowerShell test failed: {e}")
             print("This may indicate issues with Windows workflow execution")
     else:
-        print("✅ Unix/Linux/macOS - using bash commands in workflow")
+        print("[OK] Unix/Linux/macOS - using bash commands in workflow")
 
     # Step 5: Test examples
     run_command(
@@ -169,30 +169,30 @@ Write-Host "... ($lineCount total lines)"
     # Step 6: Check import
     try:
         import chemfst
-        print("✅ ChemFST module imported successfully")
-        print(f"   Available attributes: {[attr for attr in dir(chemfst) if not attr.startswith('_')]}")
+        print("[OK] ChemFST module imported successfully")
+        print(f"   [INFO] Available attributes: {[attr for attr in dir(chemfst) if not attr.startswith('_')]}")
     except ImportError as e:
-        print(f"❌ Failed to import chemfst: {e}")
+        print(f"[FAIL] Failed to import chemfst: {e}")
         sys.exit(1)
 
     # Step 7: Validate test data content
     project_test_file = project_root / "data" / "chemical_names.txt"
     chemical_names = read_chemical_names(project_test_file)
-    print(f"\n📊 Test Data Summary:")
+    print(f"\n[INFO] Test Data Summary:")
     print(f"   Total chemical names: {len(chemical_names)}")
     print(f"   First few entries: {', '.join(chemical_names[:5])}")
     print(f"   Data source: {project_test_file}")
 
-    print(f"\n🔍 Platform Compatibility:")
+    print(f"\n[INFO] Platform Compatibility:")
     print(f"   Current OS: {platform.system()}")
     if platform.system() == "Windows":
-        print("   ✅ Windows PowerShell commands tested successfully")
-        print("   ✅ Workflow should work on windows-latest")
+        print("   [OK] Windows PowerShell commands tested successfully")
+        print("   [OK] Workflow should work on windows-latest")
     else:
-        print("   ✅ Unix/bash commands will work on ubuntu-latest and macos-latest")
-        print("   ✅ Windows compatibility handled by separate PowerShell steps")
+        print("   [OK] Unix/bash commands will work on ubuntu-latest and macos-latest")
+        print("   [OK] Windows compatibility handled by separate PowerShell steps")
 
-    print("\n🎉 All validation checks passed!")
+    print("\n[OK] All validation checks passed!")
     print("\nThe GitHub workflow should work correctly with this configuration.")
     print("\nNext steps:")
     print("- Push changes to trigger the GitHub workflow")

@@ -21,7 +21,7 @@ def chemical_names_txt():
     """Fixture to provide path to chemical names text file"""
     path = Path("data/chemical_names.txt")
     if not path.exists():
-        pytest.fail(f"Chemical names text file not found at {path}")
+        pytest.fail(f"[FAIL] Chemical names text file not found at {path}")
     return path
 
 
