@@ -2,6 +2,8 @@
 
 [![Python CI](https://github.com/esrehmki/chemfst/actions/workflows/python.yml/badge.svg)](https://github.com/esrehmki/chemfst/actions/workflows/python.yml)
 [![Rust CI](https://github.com/esrehmki/chemfst/actions/workflows/rust.yml/badge.svg)](https://github.com/esrehmki/chemfst/actions/workflows/rust.yml)
+[![Docs](https://img.shields.io/badge/docs-mdBook-blue)](https://esrehmki.github.io/chemfst/)
+
 
 ChemFST is a high-performance chemical name search library using Finite State Transducers (FSTs) to provide efficient searches of systematic and trivial names of chemical compounds in milliseconds. It's particularly useful for autocomplete features and searching through large chemical compound databases.
 
