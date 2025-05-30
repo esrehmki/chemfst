@@ -7,6 +7,7 @@ data/chemical_names.fst
 /chemfst-py/target/
 **/*.rs.bk
 Cargo.lock
+book/*
 
 # Python ignores
 __pycache__/
