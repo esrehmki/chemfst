@@ -16,13 +16,17 @@ ChemFST uses Finite State Transducer (FST) files for high-performance chemical n
 ### Source File: `data/chemical_names.txt`
 - **Required**: Must exist to generate FST files
 - **Format**: One chemical name per line, UTF-8 encoded
-- **Example content**:
+- **Included**: The repository includes a sample file with 32+ chemical names
+- **Example content** (from included file):
   ```
+  acetaminophen
+  acetylsalicylic acid
+  acetic acid
   acetone
+  acetonitrile
   benzene
-  ethanol
-  methanol
-  toluene
+  benzoic acid
+  ...
   ```
 
 ### Generated File: `data/chemical_names.fst`
@@ -72,7 +76,7 @@ data/chemical_names.fst
 ### Missing Source File
 **Error**: `Chemical names text file not found at data/chemical_names.txt`
 
-**Solution**: Create the source file with chemical names (one per line)
+**Solution**: The repository includes a sample `data/chemical_names.txt` file. If missing, create the source file with chemical names (one per line) or restore it from version control.
 
 ### Permission Issues
 **Error**: Cannot write FST file
@@ -86,11 +90,13 @@ data/chemical_names.fst
 
 ## Best Practices
 
-1. **Backup Source Files**: Keep `chemical_names.txt` in version control
-2. **Ignore Generated Files**: Never commit `.fst` files to version control
-3. **Document Data Sources**: Include attribution for chemical name datasets
-4. **Test Locally**: Always test FST generation before deployment
-5. **Automation**: Include FST building in deployment scripts
+1. **Use Existing Data**: The repository includes a curated `chemical_names.txt` file with sample data
+2. **Backup Source Files**: Keep `chemical_names.txt` in version control (already included)
+3. **Ignore Generated Files**: Never commit `.fst` files to version control
+4. **Document Data Sources**: Include attribution for chemical name datasets
+5. **Test Locally**: Always test FST generation before deployment
+6. **Automation**: Include FST building in deployment scripts
+7. **Customize Data**: Replace the sample data with your own chemical names as needed
 
 ## Performance Notes
 

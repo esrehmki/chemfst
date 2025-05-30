@@ -44,6 +44,7 @@ use std::error::Error;
 fn main() -> Result<(), Box<dyn Error>> {
     // Step 1: Create an index from a list of chemical names (one term per line)
     // Note: The .fst file is generated and not distributed with the package
+    // The repository includes a sample data/chemical_names.txt with 32+ chemical names
     let input_path = "data/chemical_names.txt";
     let fst_path = "data/chemical_names.fst";
     build_fst_set(input_path, fst_path)?;
@@ -134,6 +135,45 @@ cargo test
 ### Adding New Tests
 
 Add new integration tests to the `tests/fst_search_tests.rs` file or create additional test files in the `tests` directory.
+
+## Continuous Integration
+
+The project uses GitHub Actions for continuous integration and testing across multiple platforms and Python versions.
+
+### GitHub Workflows
+
+#### Rust CI (`rust.yml`)
+- **Platforms**: Ubuntu, macOS, Windows
+- **Rust versions**: stable, beta
+- **Features**: Build, test, clippy linting, format checking, code coverage
+
+#### Python CI (`python.yml`)
+- **Platforms**: Ubuntu, macOS, Windows
+- **Python versions**: 3.11, 3.12, 3.13
+- **Features**:
+  - Automated FST file generation from test data
+  - Cross-platform testing
+  - Example execution validation
+  - Code coverage reporting
+
+### Local Validation
+
+Before pushing changes, validate the workflow locally:
+
+```bash
+# Run the validation script
+python scripts/validate_workflow.py
+```
+
+This script:
+- Creates test data files
+- Builds the Python package
+- Runs all tests
+- Validates examples work correctly
+
+### FST File Generation in CI
+
+The workflows automatically create test data files since FST files are not distributed with the package. Each platform creates the required `data/chemical_names.txt` with sample chemical names for testing.
 
 ### Contributing
 
