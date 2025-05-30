@@ -201,3 +201,4 @@ jobs:
           file: ./coverage.xml
           flags: python
           name: python-coverage
+          slug: esrehmki/chemfst
