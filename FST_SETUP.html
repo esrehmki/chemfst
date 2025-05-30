@@ -1,0 +1,320 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>FST File Setup Guide - ChemFST Documentation</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="Comprehensive documentation for the ChemFST project, following the Rust book style.">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+        <!-- MathJax -->
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "light";
+            const default_dark_theme = "navy";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">ChemFST Documentation</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="fst-file-setup-guide"><a class="header" href="#fst-file-setup-guide">FST File Setup Guide</a></h1>
+<h2 id="overview"><a class="header" href="#overview">Overview</a></h2>
+<p>ChemFST uses Finite State Transducer (FST) files for high-performance chemical name searching. <strong>FST files (.fst) are not distributed with the package</strong> and must be generated from source text files.</p>
+<h2 id="why-fst-files-are-not-distributed"><a class="header" href="#why-fst-files-are-not-distributed">Why FST Files Are Not Distributed</a></h2>
+<ol>
+<li><strong>Generated Content</strong>: FST files are compiled indexes created from source data</li>
+<li><strong>Size Considerations</strong>: FST files can be large depending on the dataset</li>
+<li><strong>Customization</strong>: Users typically want to use their own chemical name datasets</li>
+<li><strong>License Clarity</strong>: Source text files may have different licensing than generated indexes</li>
+</ol>
+<h2 id="required-files"><a class="header" href="#required-files">Required Files</a></h2>
+<h3 id="source-file-datachemical_namestxt"><a class="header" href="#source-file-datachemical_namestxt">Source File: <code>data/chemical_names.txt</code></a></h3>
+<ul>
+<li><strong>Required</strong>: Must exist to generate FST files</li>
+<li><strong>Format</strong>: One chemical name per line, UTF-8 encoded</li>
+<li><strong>Included</strong>: The repository includes a sample file with 32+ chemical names</li>
+<li><strong>Example content</strong> (from included file):
+<pre><code>acetaminophen
+acetylsalicylic acid
+acetic acid
+acetone
+acetonitrile
+benzene
+benzoic acid
+...
+</code></pre>
+</li>
+</ul>
+<h3 id="generated-file-datachemical_namesfst"><a class="header" href="#generated-file-datachemical_namesfst">Generated File: <code>data/chemical_names.fst</code></a></h3>
+<ul>
+<li><strong>Generated</strong>: Created by ChemFST from the source text file</li>
+<li><strong>Not tracked</strong>: Ignored by git (see <code>.gitignore</code>)</li>
+<li><strong>Not distributed</strong>: Must be built locally</li>
+</ul>
+<h2 id="building-fst-files"><a class="header" href="#building-fst-files">Building FST Files</a></h2>
+<h3 id="python-api"><a class="header" href="#python-api">Python API</a></h3>
+<pre><code class="language-python">from chemfst import build_fst
+
+# Build FST index from text file
+build_fst("data/chemical_names.txt", "data/chemical_names.fst")
+</code></pre>
+<h3 id="rust-api"><a class="header" href="#rust-api">Rust API</a></h3>
+<pre><pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use chemfst::build_fst_set;
+
+// Build FST index from text file
+build_fst_set("data/chemical_names.txt", "data/chemical_names.fst")?;
+<span class="boring">}</span></code></pre></pre>
+<h2 id="automated-testing"><a class="header" href="#automated-testing">Automated Testing</a></h2>
+<p>The test suite automatically handles FST file generation:</p>
+<ol>
+<li><strong>Source File Check</strong>: Tests verify <code>data/chemical_names.txt</code> exists</li>
+<li><strong>Auto-Generation</strong>: FST files are built automatically during testing if missing</li>
+<li><strong>Session Scope</strong>: FST generation is cached across test sessions for efficiency</li>
+<li><strong>Cleanup</strong>: Generated files are properly ignored by version control</li>
+</ol>
+<h2 id="git-configuration"><a class="header" href="#git-configuration">Git Configuration</a></h2>
+<p>The repository is configured to ignore FST files:</p>
+<pre><code class="language-gitignore"># Generated FST files (not distributed with package)
+data/chemical_names.fst
+*.fst
+</code></pre>
+<h2 id="troubleshooting"><a class="header" href="#troubleshooting">Troubleshooting</a></h2>
+<h3 id="missing-source-file"><a class="header" href="#missing-source-file">Missing Source File</a></h3>
+<p><strong>Error</strong>: <code>Chemical names text file not found at data/chemical_names.txt</code></p>
+<p><strong>Solution</strong>: The repository includes a sample <code>data/chemical_names.txt</code> file. If missing, create the source file with chemical names (one per line) or restore it from version control.</p>
+<h3 id="permission-issues"><a class="header" href="#permission-issues">Permission Issues</a></h3>
+<p><strong>Error</strong>: Cannot write FST file</p>
+<p><strong>Solution</strong>: Ensure write permissions for the data directory</p>
+<h3 id="empty-results"><a class="header" href="#empty-results">Empty Results</a></h3>
+<p><strong>Error</strong>: Search returns no results</p>
+<p><strong>Solution</strong>: Verify source file contains the expected chemical names</p>
+<h2 id="best-practices"><a class="header" href="#best-practices">Best Practices</a></h2>
+<ol>
+<li><strong>Use Existing Data</strong>: The repository includes a curated <code>chemical_names.txt</code> file with sample data</li>
+<li><strong>Backup Source Files</strong>: Keep <code>chemical_names.txt</code> in version control (already included)</li>
+<li><strong>Ignore Generated Files</strong>: Never commit <code>.fst</code> files to version control</li>
+<li><strong>Document Data Sources</strong>: Include attribution for chemical name datasets</li>
+<li><strong>Test Locally</strong>: Always test FST generation before deployment</li>
+<li><strong>Automation</strong>: Include FST building in deployment scripts</li>
+<li><strong>Customize Data</strong>: Replace the sample data with your own chemical names as needed</li>
+</ol>
+<h2 id="performance-notes"><a class="header" href="#performance-notes">Performance Notes</a></h2>
+<ul>
+<li><strong>Build Time</strong>: FST generation is fast (typically milliseconds for small datasets)</li>
+<li><strong>Memory Usage</strong>: FST files are memory-mapped for efficient loading</li>
+<li><strong>Search Speed</strong>: FST searches are optimized for sub-millisecond response times</li>
+<li><strong>Preloading</strong>: Use the preload functionality for even better performance</li>
+</ul>
+<h2 id="examples"><a class="header" href="#examples">Examples</a></h2>
+<p>See <code>python/examples/demo.py</code> for a comprehensive example that:</p>
+<ol>
+<li>Builds FST from source file</li>
+<li>Loads the generated FST</li>
+<li>Demonstrates search functionality</li>
+<li>Shows performance characteristics</li>
+</ol>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="CONTRIBUTING.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="CONTRIBUTING.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>
