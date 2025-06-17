@@ -69,6 +69,9 @@ def test_logging():
 
         print("All tests completed successfully!")
 
+        # Release the FST instance before cleanup
+        del fst
+
     finally:
         # Clean up
         if os.path.exists(input_file):
@@ -142,6 +145,9 @@ def test_logging_levels():
         logging.getLogger('chemfst').setLevel(logging.WARNING)
         results = fst.substring_search("ene", 5)
         assert len(results) == 2
+
+        # Release the FST instance before cleanup
+        del fst
 
     finally:
         # Clean up
