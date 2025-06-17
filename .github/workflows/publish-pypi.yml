@@ -14,19 +14,24 @@ jobs:
   build-linux:
     name: Build Wheels on Linux
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target: [x86_64, aarch64]
     steps:
       - uses: actions/checkout@v4
 
       - name: Build wheels for Python 3.11, 3.12, and 3.13
         uses: PyO3/maturin-action@v1
         with:
+          target: ${{ matrix.target }}
           command: build
           args: --release --out dist -i python3.11 -i python3.12 -i python3.13
+          sccache: 'true'
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: python-package-linux
+          name: python-package-linux-${{ matrix.target }}
           path: dist/
 
   build-windows:
@@ -60,25 +65,22 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        python-version: [3.11, 3.12, 3.13]
+        target: [x86_64, aarch64]
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+      - name: Build wheels for Python 3.11, 3.12, and 3.13
+        uses: PyO3/maturin-action@v1
         with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Install maturin
-        run: pip install maturin
-
-      - name: Build wheel
-        run: maturin build --release --out dist
+          target: ${{ matrix.target }}
+          command: build
+          args: --release --out dist -i python3.11 -i python3.12 -i python3.13
+          sccache: 'true'
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: python-package-macos-${{ matrix.python-version }}
+          name: python-package-macos-${{ matrix.target }}
           path: dist/
 
   publish:
@@ -92,46 +94,46 @@ jobs:
       id-token: write
       contents: read
     steps:
-      - name: Download artifacts
+      - name: Download Linux x86_64 artifacts
         uses: actions/download-artifact@v4
         with:
-          name: python-package-linux
+          name: python-package-linux-x86_64
           path: dist/
 
-      - name: Download artifacts
+      - name: Download Linux aarch64 artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: python-package-linux-aarch64
+          path: dist/
+
+      - name: Download Windows artifacts
         uses: actions/download-artifact@v4
         with:
           name: python-package-windows-3.11
           path: dist/
 
-      - name: Download artifacts
+      - name: Download Windows artifacts
         uses: actions/download-artifact@v4
         with:
           name: python-package-windows-3.12
           path: dist/
 
-      - name: Download artifacts
+      - name: Download Windows artifacts
         uses: actions/download-artifact@v4
         with:
           name: python-package-windows-3.13
           path: dist/
 
-      - name: Download artifacts
+      - name: Download macOS x86_64 artifacts
         uses: actions/download-artifact@v4
         with:
-          name: python-package-macos-3.11
+          name: python-package-macos-x86_64
           path: dist/
 
-      - name: Download artifacts
+      - name: Download macOS aarch64 artifacts
         uses: actions/download-artifact@v4
         with:
-          name: python-package-macos-3.12
-          path: dist/
-
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: python-package-macos-3.13
+          name: python-package-macos-aarch64
           path: dist/
 
       - name: Publish to PyPI
