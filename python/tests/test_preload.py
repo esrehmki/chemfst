@@ -29,7 +29,7 @@ class TestChemFSTPreload:
 
         # Test prefix search performance
         test_prefix = "a"
-        iterations = 10
+        iterations = 1000
 
         # Measure without preload
         start = time.time()
