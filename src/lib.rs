@@ -175,7 +175,12 @@ pub fn load_fst_set(fst_path: &str) -> Result<Set<Mmap>, Box<dyn Error>> {
     })?;
 
     debug!("Memory mapping FST file");
-    let mmap = unsafe { Mmap::map(&file)? };
+    let mmap = unsafe {
+        Mmap::map(&file).map_err(|e| {
+            error!("Failed to memory map FST file '{}': {}", fst_path, e);
+            e
+        })?
+    };
 
     debug!("Creating FST set from memory map");
     let set = Set::new(mmap).map_err(|e| {

@@ -12,7 +12,8 @@ def test_logging():
     # Configure logging to capture all messages
     logging.basicConfig(
         level=logging.DEBUG,
-        format='%(asctime)s [%(name)s] %(levelname)s: %(message)s'
+        format='%(asctime)s [%(name)s] %(levelname)s: %(message)s',
+        force=True
     )
 
     logger = logging.getLogger('chemfst')
@@ -79,13 +80,11 @@ def test_logging():
 
 def test_logging_error_cases():
     """Test that error cases generate appropriate log messages."""
-    import io
-    import sys
-
     # Configure logging to capture all messages
     logging.basicConfig(
         level=logging.DEBUG,
-        format='%(asctime)s [%(name)s] %(levelname)s: %(message)s'
+        format='%(asctime)s [%(name)s] %(levelname)s: %(message)s',
+        force=True
     )
 
     logger = logging.getLogger('chemfst')
