@@ -23,10 +23,11 @@ jobs:
       - name: Build wheels for Python 3.11, 3.12, and 3.13
         uses: PyO3/maturin-action@v1
         with:
+          manylinux: 2014
           target: ${{ matrix.target }}
           command: build
           args: --release --out dist -i python3.11 -i python3.12 -i python3.13
-          sccache: 'true'
+          sccache: "true"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -75,7 +76,7 @@ jobs:
           target: ${{ matrix.target }}
           command: build
           args: --release --out dist -i python3.11 -i python3.12 -i python3.13
-          sccache: 'true'
+          sccache: "true"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
