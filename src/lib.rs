@@ -39,6 +39,7 @@
 //! ```
 
 use fst::{IntoStreamer, Set, SetBuilder, Streamer};
+use log::{debug, error, info};
 use memmap2::Mmap;
 
 use std::error::Error;
@@ -77,23 +78,54 @@ use std::io::{BufRead, BufReader};
 /// assert!(result.is_ok());
 /// ```
 pub fn build_fst_set(input_path: &str, fst_path: &str) -> Result<(), Box<dyn Error>> {
-    let file = File::open(input_path)?;
+    info!("Building FST from input file: {}", input_path);
+    debug!("Output FST file: {}", fst_path);
+
+    let file = File::open(input_path).map_err(|e| {
+        error!("Failed to open input file '{}': {}", input_path, e);
+        e
+    })?;
     let reader = BufReader::new(file);
 
     let mut names: Vec<String> = reader.lines().filter_map(Result::ok).collect();
+    info!("Read {} chemical names from input file", names.len());
 
     // The fst crate requires sorted input.
+    debug!("Sorting and deduplicating chemical names");
     names.sort_unstable();
+    let original_count = names.len();
     names.dedup();
+    let deduplicated_count = names.len();
 
-    let wtr = File::create(fst_path)?;
+    if original_count != deduplicated_count {
+        info!(
+            "Removed {} duplicate entries, {} unique names remaining",
+            original_count - deduplicated_count,
+            deduplicated_count
+        );
+    }
+
+    debug!("Creating FST builder");
+    let wtr = File::create(fst_path).map_err(|e| {
+        error!("Failed to create output file '{}': {}", fst_path, e);
+        e
+    })?;
     let mut builder = SetBuilder::new(wtr)?;
 
-    for name in names {
+    debug!("Inserting {} names into FST", names.len());
+    for (i, name) in names.iter().enumerate() {
+        if i > 0 && i % 10000 == 0 {
+            debug!("Inserted {} / {} names", i, names.len());
+        }
         builder.insert(name)?;
     }
 
+    debug!("Finalizing FST");
     builder.finish()?;
+    info!(
+        "Successfully built FST with {} entries at: {}",
+        deduplicated_count, fst_path
+    );
     Ok(())
 }
 
@@ -135,9 +167,23 @@ pub fn build_fst_set(input_path: &str, fst_path: &str) -> Result<(), Box<dyn Err
 /// let set = load_fst_set("data/chemical_names.fst").unwrap();
 /// ```
 pub fn load_fst_set(fst_path: &str) -> Result<Set<Mmap>, Box<dyn Error>> {
-    let file = OpenOptions::new().read(true).open(fst_path)?;
+    info!("Loading FST from: {}", fst_path);
+
+    let file = OpenOptions::new().read(true).open(fst_path).map_err(|e| {
+        error!("Failed to open FST file '{}': {}", fst_path, e);
+        e
+    })?;
+
+    debug!("Memory mapping FST file");
     let mmap = unsafe { Mmap::map(&file)? };
-    let set = Set::new(mmap)?;
+
+    debug!("Creating FST set from memory map");
+    let set = Set::new(mmap).map_err(|e| {
+        error!("Failed to create FST set from file '{}': {}", fst_path, e);
+        e
+    })?;
+
+    info!("Successfully loaded FST from: {}", fst_path);
     Ok(set)
 }
 
@@ -169,6 +215,11 @@ pub fn load_fst_set(fst_path: &str) -> Result<Set<Mmap>, Box<dyn Error>> {
 /// ```
 #[must_use]
 pub fn prefix_search(set: &Set<Mmap>, prefix: &str, max_results: usize) -> Vec<String> {
+    debug!(
+        "Starting prefix search for '{}' with max_results={}",
+        prefix, max_results
+    );
+
     let mut results = Vec::new();
     let mut stream = set
         .range()
@@ -176,15 +227,25 @@ pub fn prefix_search(set: &Set<Mmap>, prefix: &str, max_results: usize) -> Vec<S
         .lt(format!("{}{}", prefix, char::MAX))
         .into_stream();
 
+    let mut checked_count = 0;
     while let Some(key) = stream.next() {
+        checked_count += 1;
         if results.len() >= max_results {
+            debug!("Reached max_results limit of {}", max_results);
             break;
         }
         if let Ok(s) = String::from_utf8(key.to_vec()) {
+            debug!("Found match: {}", s);
             results.push(s);
         }
     }
 
+    info!(
+        "Prefix search for '{}' found {} results (checked {} entries)",
+        prefix,
+        results.len(),
+        checked_count
+    );
     results
 }
 
@@ -225,25 +286,49 @@ pub fn substring_search(
     substring: &str,
     max_results: usize,
 ) -> Result<Vec<String>, Box<dyn Error>> {
+    debug!(
+        "Starting substring search for '{}' with max_results={}",
+        substring, max_results
+    );
+
     // We'll do this manually instead of using fst-regex
     // No need for regex pattern as we're doing direct substring matching
+    let substring_lower = substring.to_lowercase();
 
     let mut results = Vec::new();
     let mut stream = set.stream().into_stream();
+    let mut checked_count = 0;
 
     while let Some(key) = stream.next() {
+        checked_count += 1;
+        if checked_count % 10000 == 0 {
+            debug!(
+                "Checked {} entries, found {} matches so far",
+                checked_count,
+                results.len()
+            );
+        }
+
         if results.len() >= max_results {
+            debug!("Reached max_results limit of {}", max_results);
             break;
         }
 
         if let Ok(s) = String::from_utf8(key.to_vec()) {
             // Manually check if the string contains our substring
-            if s.to_lowercase().contains(&substring.to_lowercase()) {
+            if s.to_lowercase().contains(&substring_lower) {
+                debug!("Found match: {}", s);
                 results.push(s);
             }
         }
     }
 
+    info!(
+        "Substring search for '{}' found {} results (checked {} entries)",
+        substring,
+        results.len(),
+        checked_count
+    );
     Ok(results)
 }
 
@@ -277,6 +362,8 @@ pub fn substring_search(
 /// println!("Preloaded {} chemical names into memory", count);
 /// ```
 pub fn preload_fst_set(set: &Set<Mmap>) -> Result<usize, Box<dyn Error>> {
+    info!("Starting FST preload to load all pages into memory");
+
     // Force the OS to load parts of the FST into memory by performing a traversal
     let mut stream = set.stream().into_stream();
     let mut count = 0;
@@ -284,7 +371,11 @@ pub fn preload_fst_set(set: &Set<Mmap>) -> Result<usize, Box<dyn Error>> {
     // Just iterate through the set to touch all pages
     while stream.next().is_some() {
         count += 1;
+        if count % 10000 == 0 {
+            debug!("Preloaded {} entries", count);
+        }
     }
 
+    info!("Successfully preloaded {} entries into memory", count);
     Ok(count)
 }

@@ -11,18 +11,19 @@ readme = "README.md"
 keywords = ["chemistry", "search", "fst", "autocomplete", "cheminformatics"]
 categories = ["science", "text-processing", "data-structures"]
 include = [
-  "/src/**/*",
-  "/tests/**/*",
-  "/Cargo.toml",
-  "/README.md",
-  "/LICENSE",
-  "/CHANGELOG.md",
+    "/src/**/*",
+    "/tests/**/*",
+    "/Cargo.toml",
+    "/README.md",
+    "/LICENSE",
+    "/CHANGELOG.md",
 ]
 
 [dependencies]
 fst = "0.4"
 memmap2 = "0.9"
 regex = "1.5"
+log = "0.4"
 
 [dev-dependencies]
 tempfile = "3.8"
