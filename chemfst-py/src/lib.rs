@@ -4,10 +4,14 @@ use pyo3::exceptions::{PyFileNotFoundError, PyRuntimeError};
 use std::path::Path;
 use memmap2::Mmap;
 use fst::Set;
+use log::{info, debug, error};
 
 /// Python module for ChemFST: A high-performance chemical name search library using Finite State Transducers
 #[pymodule]
 fn chemfst(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
+    // Initialize pyo3-log to bridge Rust logging to Python logging
+    pyo3_log::init();
+
     m.add_class::<ChemicalFST>()?;
     m.add_function(wrap_pyfunction!(build_fst, m)?)?;
     m.add("__doc__", "ChemFST Python bindings for high-performance chemical name searching using Finite State Transducers (FSTs).")?;
@@ -28,7 +32,10 @@ fn chemfst(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
 ///     RuntimeError: If there's an error building the FST
 #[pyfunction]
 fn build_fst(input_path: &str, fst_path: &str) -> PyResult<()> {
+    info!("Python: build_fst called with input='{}', output='{}'", input_path, fst_path);
+
     if !Path::new(input_path).exists() {
+        error!("Python: Input file not found: {}", input_path);
         return Err(PyFileNotFoundError::new_err(format!(
             "Input file not found: {}",
             input_path
@@ -36,8 +43,12 @@ fn build_fst(input_path: &str, fst_path: &str) -> PyResult<()> {
     }
 
     ::chemfst::build_fst_set(input_path, fst_path).map_err(|e| {
+        error!("Python: Failed to build FST: {}", e);
         PyRuntimeError::new_err(format!("Failed to build FST: {}", e))
-    })
+    })?;
+
+    info!("Python: Successfully completed build_fst");
+    Ok(())
 }
 
 /// ChemicalFST provides efficient searching of chemical names using Finite State Transducers.
@@ -64,7 +75,10 @@ impl ChemicalFST {
     ///     RuntimeError: If there's an error loading the FST
     #[new]
     fn new(fst_path: &str) -> PyResult<Self> {
+        info!("Python: Creating new ChemicalFST instance from: {}", fst_path);
+
         if !Path::new(fst_path).exists() {
+            error!("Python: FST file not found: {}", fst_path);
             return Err(PyFileNotFoundError::new_err(format!(
                 "FST file not found: {}",
                 fst_path
@@ -72,9 +86,11 @@ impl ChemicalFST {
         }
 
         let set = ::chemfst::load_fst_set(fst_path).map_err(|e| {
+            error!("Python: Failed to load FST: {}", e);
             PyRuntimeError::new_err(format!("Failed to load FST: {}", e))
         })?;
 
+        info!("Python: Successfully created ChemicalFST instance");
         Ok(Self { set })
     }
 
@@ -87,7 +103,13 @@ impl ChemicalFST {
     /// Returns:
     ///     list: A list of chemical names that start with the given prefix
     fn prefix_search(&self, prefix: &str, max_results: Option<usize>) -> Vec<String> {
-        ::chemfst::prefix_search(&self.set, prefix, max_results.unwrap_or(100))
+        let max_results = max_results.unwrap_or(100);
+        debug!("Python: prefix_search called with prefix='{}', max_results={}", prefix, max_results);
+
+        let results = ::chemfst::prefix_search(&self.set, prefix, max_results);
+
+        info!("Python: prefix_search completed, returning {} results", results.len());
+        results
     }
 
     /// Find chemical names containing a specified substring.
@@ -102,8 +124,17 @@ impl ChemicalFST {
     /// Raises:
     ///     RuntimeError: If there's an error during the search
     fn substring_search(&self, substring: &str, max_results: Option<usize>) -> PyResult<Vec<String>> {
-        ::chemfst::substring_search(&self.set, substring, max_results.unwrap_or(100))
-            .map_err(|e| PyRuntimeError::new_err(format!("Search error: {}", e)))
+        let max_results = max_results.unwrap_or(100);
+        debug!("Python: substring_search called with substring='{}', max_results={}", substring, max_results);
+
+        let results = ::chemfst::substring_search(&self.set, substring, max_results)
+            .map_err(|e| {
+                error!("Python: Substring search error: {}", e);
+                PyRuntimeError::new_err(format!("Search error: {}", e))
+            })?;
+
+        info!("Python: substring_search completed, returning {} results", results.len());
+        Ok(results)
     }
 
     /// Return a string representation of the ChemicalFST instance.
@@ -131,7 +162,15 @@ impl ChemicalFST {
     /// Raises:
     ///     RuntimeError: If there's an error during preloading
     fn preload(&self) -> PyResult<usize> {
-        ::chemfst::preload_fst_set(&self.set)
-            .map_err(|e| PyRuntimeError::new_err(format!("Preload error: {}", e)))
+        info!("Python: preload called");
+
+        let count = ::chemfst::preload_fst_set(&self.set)
+            .map_err(|e| {
+                error!("Python: Preload error: {}", e);
+                PyRuntimeError::new_err(format!("Preload error: {}", e))
+            })?;
+
+        info!("Python: preload completed, loaded {} entries", count);
+        Ok(count)
     }
 }
