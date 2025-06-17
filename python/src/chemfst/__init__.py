@@ -4,7 +4,7 @@ This package provides Python bindings for ChemFST, a Rust library that uses
 Finite State Transducers (FSTs) for efficient searching of chemical names.
 """
 
-__version__ = "0.1.2"
+__version__ = "0.2.0"
 
 # Import directly from the compiled module
 from chemfst import ChemicalFST, build_fst

@@ -1,6 +1,6 @@
 [package]
 name = "chemfst"
-version = "0.1.2"
+version = "0.2.0"
 edition = "2021"
 authors = ["Emanuel Ehmki"]
 description = "A high-performance chemical name search library using Finite State Transducers (FSTs)"
