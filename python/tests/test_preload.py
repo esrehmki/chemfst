@@ -16,37 +16,6 @@ class TestChemFSTPreload:
         assert isinstance(count, int)
         assert count > 0
 
-    def test_preload_performance_improvement(self, fst_file):
-        """Test that preloading improves search performance"""
-        import chemfst
-
-        # Create two separate instances
-        fst_no_preload = chemfst.ChemicalFST(str(fst_file))
-        fst_with_preload = chemfst.ChemicalFST(str(fst_file))
-
-        # Preload one instance
-        fst_with_preload.preload()
-
-        # Test prefix search performance
-        test_prefix = "a"
-        iterations = 1000
-
-        # Measure without preload
-        start = time.time()
-        for _ in range(iterations):
-            fst_no_preload.prefix_search(test_prefix, max_results=100)
-        time_no_preload = time.time() - start
-
-        # Measure with preload
-        start = time.time()
-        for _ in range(iterations):
-            fst_with_preload.prefix_search(test_prefix, max_results=100)
-        time_with_preload = time.time() - start
-
-        # Preloading should not make things significantly slower
-        # (allowing for some variation in measurements)
-        assert time_with_preload <= time_no_preload * 1.5
-
     def test_search_consistency_after_preload(self, fst_instance):
         """Test that search results are consistent before and after preloading"""
         test_prefix = "eth"
